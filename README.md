@@ -4,7 +4,7 @@ As a developer, you may have to work on softwares that will be used by hundreds 
 If your software shows some weaknesses, these weaknesses will expose the users through your software.
 It is your duty to understand the different techniques used to exploit these weaknesses in order to spot them and avoid them.
 
-This project aims to make you discover, through several little challenges, cyber security in various fields.
+SnowCrash is the first iso CTF of the security branch.
 You will use more or less complex methods that will give you a new perspective on IT in general.
 You will reach some stalemate during this project. You will have to surpass them yourself.
 You must be the one and ONLY key to the locked doors you will face.
