@@ -1,27 +1,35 @@
 # level00
 
-- We found a password inside `/etc/passwd`:
-    >`flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash`
+- We login as user level00, we ar looking for a token (a password) allowing us to open a terminal as user flag00, in order to execute the command `/bin/getflag` as user flag00. First, let's try to see if there's something belonging to user flag00.
+```
+level00@SnowCrash:~$ find / -user flag00 2>/dev/null | grep -v "/proc/*"
+/usr/sbin/john
+/rofs/usr/sbin/john
 
-- This `42hDRfypTqqnw` was clearly a hashed password for the user flag01
+level00@SnowCrash:~$ ls -l /usr/sbin/john
+----r--r-- 1 flag00 flag00 15 Mar  5  2016 /usr/sbin/john
 
-- We know we can use `John the Ripper` to bruteforce a hashed password
+level00@SnowCrash:~$ cat /usr/sbin/john
+cdiiddwpgswtgt
+```
 
-- Maybe it is already installed on the machine: We try the command `john`
+- So, `/usr/sbin/john` is the only file belonging to user flag00, it's probably the token, let's try.
+```
+level00@SnowCrash:~$ su flag00
+Password: cdiiddwpgswtgt
+su: Authentication failure
+```
 
-- The terminal responds: `-bash: /usr/sbin/john: Permission denied`
+- It doesn't work, the token is probably encrypted. Let's try using a decryption tool, [dcode.fr](https://www.dcode.fr/cipher-identifier) suggère [un chiffre affine](https://fr.wikipedia.org/wiki/Chiffre_affine) et propose le mot de passe 'nottoohardhere'
+```
+level00@SnowCrash:~$ su flag00
+Password: nottoohardhere
+Don't forget to launch getflag !
 
-- It means there is something called `john` inside `/usr/sbin`
+flag00@SnowCrash:~$ getflag
+Check flag.Here is your token : x24ti5gi3x0ol2eh4esiuxias
 
-- We find a file `/usr/sbin/john`: 
-    >`----r--r--  1 flag00  flag00      15 Mar  5  2016 john`
-
-- Inside this file there is `cdiiddwpgswtgt`
-
-- Viewing this pair of double letters, it was looking like Cesar's cipher
-
-- When trying with an offset of 15 to the right in Cesar's cipher it becomes `nottoohardhere`
-
-- Password works for logging to flag00
-
-- The flag to connect to level01 is `x24ti5gi3x0ol2eh4esiuxias`
+flag00@SnowCrash:~$ su level01
+Password: x24ti5gi3x0ol2eh4esiuxias
+level01@SnowCrash:~$
+```
