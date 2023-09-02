@@ -20,7 +20,7 @@ Password: cdiiddwpgswtgt
 su: Authentication failure
 ```
 
-- It doesn't work, the token is probably encrypted. Let's try using a decryption tool, [dcode.fr](https://www.dcode.fr/cipher-identifier) suggère [un chiffre affine](https://fr.wikipedia.org/wiki/Chiffre_affine) et propose le mot de passe 'nottoohardhere'
+- It doesn't work, the token is probably encrypted. Let's try using a simple online decryption tool, [dcode.fr](https://www.dcode.fr/cipher-identifier) suggests an [affine cipher](https://fr.wikipedia.org/wiki/Chiffre_affine) and provides the password 'nottoohardhere'.
 ```
 level00@SnowCrash:~$ su flag00
 Password: nottoohardhere
