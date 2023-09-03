@@ -1,28 +1,34 @@
 # level09
 
-- We log as 'level09'
+- We login as user level09.
+```
+level09@SnowCrash:~$ ls -l
+total 12
+-rwsr-sr-x 1 flag09 level09 7640 Mar  5  2016 level09
+----r--r-- 1 flag09 level09   26 Mar  5  2016 token
 
-- Two files are located inside the home directory of level09:
->`-rwsr-sr-x 1 flag09  level09 7640 Mar  5  2016 level09`
->`----r--r-- 1 flag09  level09   26 Mar  5  2016 token`
+level09@SnowCrash:~$ ./level09
+You need to provied only one arg.
 
-- The executable file has setuid & setgid bits permissions
+level09@SnowCrash:~$ ./level09 token
+tpmhr
 
-- We can see that the executable will be executed as `flag09` if we execute it being `level09`
+level09@SnowCrash:~$ cat token
+f4kmm6p|=pnDBDu{
 
-- Upon execution without arguments the executable prints:
->`You need to provied only one arg.`
+level09@SnowCrash:~$ su flag09
+Password:f4kmm6p|=pnDBDu{
+su: Authentication failure
 
-- Upon execution with `aaaaa` as argument the executable prints:
->`abcde`
+level09@SnowCrash:~$ ./level09 aaaa
+abcd
+```
 
-- We can see this is a simple Cesar's cipher with position as offset for each character
+- We can access the content of the token, but it appears to have been encrypted. When we execute the level09 binary with `aaaa` as a parameter, we get `abcd`. We can assume that the content of the token has been encrypted by the binary.
 
-- We `cat` `token`:
->`f4kmm6p|=�p�n��DB�Du{��`
 
-- There is some non displayable characters let's see them with `cat -e`
->`f4kmm6p|=M-^B^?pM-^BnM-^CM-^BDBM-^CDu{^?M-^LM-^I$`
+- The encryption seems quite simple, at first glance it appears that each character in the resulting string is the sum of its `ASCII value` + `its position in the string - 1`.
+
 
 - Let's do the substitution for each character of the token:
 ```
@@ -52,14 +58,18 @@ u				117		-20		97		97		a
 ^?		(DEL)	127		-22		105		105		i
 M-^L	(FF)	12		-23		-11		117		u
 M-^I	(TAB)	9		-24		-15		113		q
-result:		f3iji1ju5yuevaus41q1afiuq
 ```
 
-- The result is the password for `flag09`
->`level09@SnowCrash:~$ su flag09`
->`Password: `
->`Don't forget to launch getflag !`
->`flag09@SnowCrash:~$ getflag`
->`Check flag.Here is your token : s5cAJpM8ev6XHw998pRWG728z`
+- We get `f3iji1ju5yuevaus41q1afiuq`.
+```
+level09@SnowCrash:~$ su flag09
+Password:f3iji1ju5yuevaus41q1afiuq
+Don't forget to launch getflag !
 
-- We get the flag: `s5cAJpM8ev6XHw998pRWG728z`
+flag09@SnowCrash:~$ getflag
+Check flag.Here is your token : s5cAJpM8ev6XHw998pRWG728z
+
+flag09@SnowCrash:~$ su level10
+Password:s5cAJpM8ev6XHw998pRWG728z
+level10@SnowCrash:~$
+```

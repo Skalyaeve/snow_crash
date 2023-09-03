@@ -2,7 +2,7 @@
 
 - We login as user level00, we ar looking for a token (a password) allowing us to open a terminal as user flag00, in order to execute the command `/bin/getflag` as user flag00. First, let's try to see if there's something belonging to user flag00.
 ```
-level00@SnowCrash:~$ find / -user flag00 2>/dev/null | grep -v "/proc/*"
+level00@SnowCrash:~$ find / -user flag00 2>/dev/null | grep -v /proc/*
 /usr/sbin/john
 /rofs/usr/sbin/john
 
@@ -13,23 +13,25 @@ level00@SnowCrash:~$ cat /usr/sbin/john
 cdiiddwpgswtgt
 ```
 
+
 - So, `/usr/sbin/john` is the only file belonging to user flag00, it's probably the token, let's try.
 ```
 level00@SnowCrash:~$ su flag00
-Password: cdiiddwpgswtgt
+Password:cdiiddwpgswtgt
 su: Authentication failure
 ```
 
-- It doesn't work, the token is probably encrypted. Let's try using a simple online decryption tool, [dcode.fr](https://www.dcode.fr/cipher-identifier) suggests an [affine cipher](https://fr.wikipedia.org/wiki/Chiffre_affine) and provides the password 'nottoohardhere'.
+
+- It doesn't work, the token is probably encrypted. Let's try using a simple online decryption tool. [Dcode.fr](https://www.dcode.fr/cipher-identifier) suggests [an affine cipher](https://en.wikipedia.org/wiki/Affine_cipher), and provides the password `nottoohardhere`.
 ```
 level00@SnowCrash:~$ su flag00
-Password: nottoohardhere
+Password:nottoohardhere
 Don't forget to launch getflag !
 
 flag00@SnowCrash:~$ getflag
 Check flag.Here is your token : x24ti5gi3x0ol2eh4esiuxias
 
 flag00@SnowCrash:~$ su level01
-Password: x24ti5gi3x0ol2eh4esiuxias
+Password:x24ti5gi3x0ol2eh4esiuxias
 level01@SnowCrash:~$
 ```

