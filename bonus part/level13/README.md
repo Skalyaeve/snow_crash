@@ -57,47 +57,56 @@ End of assembler dump.
 ```
 
 
-- On voit que le retour de `<getuid@plt>` est comparé avec la valeur hexadecimal 1092 (4242 en décimal), si les deux valeurs ne sont pas égales, le programme va `<printf@plt>` la string qui commance à l'addresse `0x80486c8`.
+- We can see that the return from `<getuid@plt>` is compared with the hexadecimal value 1092 (4242 in decimal). If the two values are not equal, the program will call `<printf@plt>` with the string that starts at address 0x80486c8.
 ```
 (gdb) x/s 0x80486c8
 0x80486c8:       "UID %d started us but we we expect %d\n"
 ```
 
 
-- Cependant, si la comparaison est bien égale, le programme va call la fonction `<ft_des>` avec comme paramètre la string qui commance à l'addresse `0x80486ef`, ensuite, le programme va printf la stirng qui commence à l'addresse `0x8048709`.
+- However, if the comparison is indeed equal, the program will call the `<ft_des>` function with the parameter being the string that starts at the address 0x80486ef. After that, the program will printf the string that begins at the address 0x8048709.
 ```
 (gdb) x/s 0x80486ef
 0x80486ef:       "boe]!ai0FB@.:|L6l@A?>qJ}I"
 ```
+
 ```
 (gdb) x/s 0x8048709
 0x8048709:       "your token is %s\n"
 ```
 
 
-- On peut supposer que `<ft_des>` convertira `boe]!ai0FB@.:|L6l@A?>qJ}I` en le token d'on nous avons besoin pour se connecter en utilisateur flag13. [The setuid and setgid permission bits](https://en.wikipedia.org/wiki/Setuid) sont donc inutile ici, en effet nous pouvons recupérer notre token directement dans gdb puisque le code du programme contient directement le token sous forme crypté (`boe]!ai0FB@.:|L6l@A?>qJ}I`).
+- One can assume that `<ft_des>` will convert `boe]!ai0FB@.:|L6l@A?>qJ}I` into the token we need to log in as user flag13. Therefore, the setuid and setgid permission bits are unnecessary here, as we can retrieve our token directly in gdb since the program's code contains the token in encrypted form.
 ```
 (gdb) b*0x0804859a
 Breakpoint 1 at 0x804859a
+```
 
+```
 (gdb) r
 Starting program: /home/user/level13/level13
 Breakpoint 1, 0x0804859a in main ()
+```
 
+```
 (gdb) set $eax=4242
+```
 
+```
 (gdb) n
 Single stepping until exit from function main,
 which has no line number information.
 your token is 2A31L79asukciNyi8uppkEuSx
 0xb7e454d3 in __libc_start_main () from /lib/i386-linux-gnu/libc.so.6
+```
 
-(gdb) q
-
+```
 level13@SnowCrash:~$ su flag13
 Password:2A31L79asukciNyi8uppkEuSx
 su: Authentication failure
+```
 
+```
 level13@SnowCrash:~$ su level14
 Password:2A31L79asukciNyi8uppkEuSx
 level14@SnowCrash:~$

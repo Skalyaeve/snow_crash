@@ -23,11 +23,11 @@ level14@SnowCrash:~$
 ```
 
 
-- Rien.. On doit pourtant recuperer le flag14. Normalement c'est la commande `getflag` qui nous donne notre flag selon l'utilisateur qui l'execute.
-D'une façon ou d'une autre, le binaire getflag doit être en mesure de fournir les flags, donc, soit les flags sont stocker quelque part dans l'iso et la commande `getflag` sert à les recuperer, soit ils sont directement ecrits dans le code source du binaire `getflag`.
+- Nothing.. Yet we need to retrieve flag14. Normally, it's the `getflag` command that gives us our flag depending on the user who executes it.
+One way or another, the `getflag` binary must be able to provide the flags, so either the flags are stored somewhere in the ISO and the command is used to retrieve them, or they are directly written in the source code of the binary.
 
 
-- Examinons le binaire `getflag` avec [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+- Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
 level14@SnowCrash:~$ whereis getflag
 getflag: /bin/getflag
@@ -51,7 +51,7 @@ HUGE CODE
 ```
 
 
-- Voyons plutôt tout ça avec [Ghidra](https://en.wikipedia.org/wiki/Ghidra).
+- Let's save time, we can use [Ghidra](https://en.wikipedia.org/wiki/Ghidra) to get an interpretation of the source code of this binary.
 ```c
 undefined4 main(void)
 {
@@ -134,11 +134,11 @@ undefined4 main(void)
 ```
 
 
-- Le binaire est blindé de protections diverses ([DLL injection](https://en.wikipedia.org/wiki/DLL_injection), [buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow_protection), ...), mais paradoxalement les flags nous sont accessible de la même façon que le niveau précédent.
-Il nous suffit de superviser l'execution du programme avec [GDB](https://en.wikipedia.org/wiki/GNU_Debugger) et nous devrions facilement recupérer notre flag.
+- The binary contain various protections ([DLL injection](https://en.wikipedia.org/wiki/DLL_injection), [buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow_protection), ...), but the flags are accessible to us in the same way as the previous level.
+We just need to monitor the program's execution using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger) and we should be able to easily retrieve our flag.
 
 
-- Un breakpoint devra être mit après le retour de `ptrace(PTRACE_TRACEME,0,1,0)` et de `getuid()` afin de modifier le retour de ces fonctions, ainsi:
+- We just need a breakpoint should be placed after the `ptrace(PTRACE_TRACEME, 0, 1, 0)` and `getuid()` returns in order to modify the return of these functions, so:
 ```
 level14@SnowCrash:~$ cat /etc/passwd | grep flag14
 flag14:x:3014:3014::/home/flag/flag14:/bin/bash
