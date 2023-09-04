@@ -76,7 +76,7 @@ End of assembler dump.
 ```
 
 
-- One can assume that `<ft_des>` will convert `boe]!ai0FB@.:|L6l@A?>qJ}I` into the token we need to login as user flag13. Therefore, [the setuid and setgid permission bits](https://en.wikipedia.org/wiki/Setuid) are unnecessary here, as we can retrieve our token directly in gdb since the program's code contains the token in encrypted form.
+- We can assume that `<ft_des>` will convert `boe]!ai0FB@.:|L6l@A?>qJ}I` into the token we need to login as user flag13. Therefore, [the setuid and setgid permission bits](https://en.wikipedia.org/wiki/Setuid) are unnecessary here, as we can retrieve our token directly in gdb since the program's code contains the token in encrypted form.
 ```
 (gdb) b*0x0804859a
 Breakpoint 1 at 0x804859a
