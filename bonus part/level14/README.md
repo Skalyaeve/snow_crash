@@ -9,9 +9,17 @@ d--x--x--x 1 root    users    340 Aug 30  2015 ..
 -r-x------ 1 level14 level14  220 Apr  3  2012 .bash_logout
 -r-x------ 1 level14 level14 3518 Aug 30  2015 .bashrc
 -r-x------ 1 level14 level14  675 Apr  3  2012 .profile
+```
 
+```
 level14@SnowCrash:~$ find / -user flag14 2>/dev/null
+```
+
+```
 level14@SnowCrash:~$ find / -group flag14 2>/dev/null
+```
+
+```
 level14@SnowCrash:~$ cat /etc/passwd
 ...
 level14:x:2014:2014::/home/user/level14:/bin/bash
@@ -19,7 +27,6 @@ flag00:x:3000:3000::/home/flag/flag00:/bin/bash
 ...
 flag13:x:3013:3013::/home/flag/flag13:/bin/bash
 flag14:x:3014:3014::/home/flag/flag14:/bin/bash
-level14@SnowCrash:~$
 ```
 
 
@@ -31,7 +38,13 @@ One way or another, the `getflag` binary must be able to provide the flags, so e
 ```
 level14@SnowCrash:~$ whereis getflag
 getflag: /bin/getflag
+```
+
+```
 level14@SnowCrash:~$ gdb /bin/getflag
+```
+
+```
 ...
 (gdb) info functions
 All defined functions:
@@ -42,7 +55,9 @@ Non-debugging symbols:
 0x08048843  isLib
 0x08048946  main
 ...
+```
 
+```
 (gdb) disas main
 Dump of assembler code for function main:
 HUGE CODE
