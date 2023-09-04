@@ -153,7 +153,7 @@ undefined4 main(void)
 We just need to monitor the program's execution using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger) and we should be able to easily retrieve our flag.
 
 
-- We just need a breakpoint should be placed after the `ptrace(PTRACE_TRACEME, 0, 1, 0)` and `getuid()` returns in order to modify the return of these functions, so:
+- A breakpoint should be placed after the `ptrace(PTRACE_TRACEME, 0, 1, 0)` and `getuid()` returns in order to modify the return of these functions, so:
 ```
 level14@SnowCrash:~$ cat /etc/passwd | grep flag14
 flag14:x:3014:3014::/home/flag/flag14:/bin/bash
