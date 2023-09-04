@@ -28,6 +28,8 @@ Non-debugging symbols:
 Dump of assembler code for function main:
     HUGE CODE
 End of assembler dump.
+
+(gdb) q
 ```
 
 
