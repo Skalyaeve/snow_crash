@@ -86,18 +86,15 @@ Breakpoint 1 at 0x804859a
 (gdb) r
 Starting program: /home/user/level13/level13
 Breakpoint 1, 0x0804859a in main ()
-```
 
-```
 (gdb) set $eax=4242
-```
-
-```
 (gdb) n
 Single stepping until exit from function main,
 which has no line number information.
 your token is 2A31L79asukciNyi8uppkEuSx
 0xb7e454d3 in __libc_start_main () from /lib/i386-linux-gnu/libc.so.6
+
+(gdb) q
 ```
 
 ```
