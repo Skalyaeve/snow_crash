@@ -40,10 +40,10 @@ sub n {
 n(t(param("x"), param("y")));
 ```
 
-- The script appears to be designed to be executed by a [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) through a service listening on localhost:4646. It takes two parameters that are passed to the `t()` function, the return of this latter is used to `print()` a message accordingly.
+- The script appears to be designed to be executed by a [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) through a service listening on localhost through port 4646. It takes two parameters that are passed to the `t()` function, the return of this latter is used to `print()` a message accordingly.
 
 
-- The `t()` function will change all lowercase characters contained in its first parameter to uppercase, then it will erase any character following a space. The resulting string (`$xx`) will be sent to `egrep "^$xx" /tmp/xd 2>&1`.
+- The `t()` function will change all lowercase characters contained in its first parameter to uppercase, then it will erase any character following a space. The resulting string (`$xx`) will be used by `egrep "^$xx" /tmp/xd 2>&1`.
 
 
 - Because of `$xx =~ tr/a-z/A-Z/;` we cannot directly send `x=;getflag>/tmp/level12.flag` because all our characters will be transformed into uppercase, so:
