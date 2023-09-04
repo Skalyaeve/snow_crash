@@ -142,8 +142,13 @@ We just need to monitor the program's execution using [GDB](https://en.wikipedia
 ```
 level14@SnowCrash:~$ cat /etc/passwd | grep flag14
 flag14:x:3014:3014::/home/flag/flag14:/bin/bash
+```
 
+```
 level14@SnowCrash:~$ gdb /bin/getflag
+```
+
+```
 ...
 (gdb) disas main
 Dump of assembler code for function main:
@@ -155,12 +160,16 @@ Dump of assembler code for function main:
    0x08048b02 <+444>:   mov    %eax,0x18(%esp)
 ...
 End of assembler dump.
+```
 
+```
 (gdb) b*0x0804898e
 Breakpoint 1 at 0x804898e
 (gdb) b*0x08048b02
 Breakpoint 2 at 0x8048b02
+```
 
+```
 (gdb) r
 Starting program: /bin/getflag
 
@@ -181,14 +190,19 @@ Check flag.Here is your token : 7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ
 
 (gdb) q
 ```
+
 ```
 level14@SnowCrash:~$ su flag14
 Password:7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ
 Congratulation. Type getflag to get the key and send it to me the owner of this livecd :)
+```
 
+```
 flag14@SnowCrash:~$ getflag
 Check flag.Here is your token : 7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ
+```
 
+```
 flag14@SnowCrash:~$ su level15
 Unknown id: level15
 ```

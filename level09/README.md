@@ -6,23 +6,34 @@ level09@SnowCrash:~$ ls -l
 total 12
 -rwsr-sr-x 1 flag09 level09 7640 Mar  5  2016 level09
 ----r--r-- 1 flag09 level09   26 Mar  5  2016 token
+```
 
+```
 level09@SnowCrash:~$ ./level09
 You need to provied only one arg.
+```
 
+```
 level09@SnowCrash:~$ ./level09 token
 tpmhr
+```
 
+```
 level09@SnowCrash:~$ cat token
 f4kmm6p|=pnDBDu{
+```
 
+```
 level09@SnowCrash:~$ su flag09
 Password:f4kmm6p|=pnDBDu{
 su: Authentication failure
+```
 
+```
 level09@SnowCrash:~$ ./level09 aaaa
 abcd
 ```
+
 
 - We can access the content of the token, but it appears to have been encrypted. When we execute the level09 binary with `aaaa` as a parameter, we get `abcd`. We can assume that the content of the token has been encrypted by the binary.
 
@@ -60,15 +71,20 @@ M-^L	(FF)	12		-23		-11		117		u
 M-^I	(TAB)	9		-24		-15		113		q
 ```
 
+
 - We get `f3iji1ju5yuevaus41q1afiuq`.
 ```
 level09@SnowCrash:~$ su flag09
 Password:f3iji1ju5yuevaus41q1afiuq
 Don't forget to launch getflag !
+```
 
+```
 flag09@SnowCrash:~$ getflag
 Check flag.Here is your token : s5cAJpM8ev6XHw998pRWG728z
+```
 
+```
 flag09@SnowCrash:~$ su level10
 Password:s5cAJpM8ev6XHw998pRWG728z
 level10@SnowCrash:~$

