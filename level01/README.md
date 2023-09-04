@@ -37,7 +37,10 @@ su: Authentication failure
 ```
 
 
-- It doesn't work, the token may be encrypted. [Dcode.fr](https://www.dcode.fr/cipher-identifier) couldn't find the password, so maybe the password is actually hashed. Let's see what [John the Ripper](https://en.wikipedia.org/wiki/John_the_Ripper) thinks about this.
+- It doesn't work, the token may be encrypted.
+
+
+- [Dcode.fr](https://www.dcode.fr/cipher-identifier) couldn't find the password, so maybe the password is actually hashed. Let's see what [John the Ripper](https://en.wikipedia.org/wiki/John_the_Ripper) thinks about this.
 ```
 $ echo 42hDRfypTqqnw > pass
 ```

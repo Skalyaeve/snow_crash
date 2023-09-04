@@ -18,7 +18,7 @@ cdiiddwpgswtgt
 ```
 
 
-- `/usr/sbin/john` is the only file belonging to user flag00, it's probably our token, let's try.
+- `/usr/sbin/john` is the only file belonging to user flag00, it's probably our token, let's try:
 ```
 level00@SnowCrash:~$ su flag00
 Password:cdiiddwpgswtgt
@@ -26,7 +26,7 @@ su: Authentication failure
 ```
 
 
-- It doesn't work, the token is probably encrypted. Let's try using a simple online decryption tool. [Dcode.fr](https://www.dcode.fr/cipher-identifier) suggests [an affine cipher](https://en.wikipedia.org/wiki/Affine_cipher), and provides the password `nottoohardhere`.
+- It doesn't work, the token might be encrypted. Let's try using a simple online decryption tool. [Dcode.fr](https://www.dcode.fr/cipher-identifier) suggests [an affine cipher](https://en.wikipedia.org/wiki/Affine_cipher), and provides the password `nottoohardhere`.
 ```
 level00@SnowCrash:~$ su flag00
 Password:nottoohardhere

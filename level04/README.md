@@ -21,7 +21,7 @@ x(param("x"));
 ```
 
 
-- The script appears to be designed to be executed by a [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) through a service listening on `localhost:4747`.
+- The script appears to be designed to be executed by a [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) through a service listening on localhost through port 4747.
 It calls the `x()` function with the parameter `x` retrieved from the CGI. The function calls `echo` with the parameter it receives.
 Therefore, if the parameter `x` is `| getflag`, this script will then execute `echo | getflag`.
 ```

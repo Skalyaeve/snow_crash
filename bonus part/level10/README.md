@@ -99,7 +99,7 @@ int main(int argc,char **argv)
 ```
 
 
-- We can see that the program makes a call to `access(argv[1])`. If this call succeeds, it will attempt to establish a socket connection to `argv[2]` on port 6969 in order to send the contents of `argv[1]`.
+- We can see that the program makes a call to `access(argv[1])`. If this call succeeds, it will attempt to establish a socket connection to `argv[2]` through port 6969 in order to send the content of the file named `argv[1]`.
 
 
 - Given that `access()` does not consider [the setuid and setgid bits](https://en.wikipedia.org/wiki/Setuid) when checking permissions, the program displays `You don't have access to the token` and then terminates.
@@ -109,10 +109,10 @@ int main(int argc,char **argv)
 Indeed, between the time when the program calls `access(our_file)` and the time when it calls `open(our_file)`, it is possible for us to replace `our_file` with a file of the same name, but which would be a symbolic link to another file. As a result, the program will rely on the return of `access(our_file)` to determine whether it can `open(our_file)` or not.
 
 
-- So, we will need 3 terminals. The first one will run `nc -lk 6969 > /tmp/pwn.log` to listen on all IPs through port 6969 and store everything it receives in `/tmp/pwn.log`.
+- Thus, we will need 3 terminals. The first one will run `nc -lk 6969 > /tmp/pwn.log` to listen on all IPs through port 6969 and store everything it receives in `/tmp/pwn.log`.
 
 
-- In a `while true` loop, the second part will create a file accessible for reading, delete it, and then create a symbolic link with the same name pointing to `/home/user/level10/token`.
+- In a `while true` loop, the second part script creates a file accessible for reading, deletes it, and then creates a symbolic link with the same name, pointing to `/home/user/level10/token`.
 ```bash
 #!/bin/bash
 while true

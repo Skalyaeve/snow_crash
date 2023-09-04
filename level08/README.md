@@ -144,7 +144,7 @@ End of assembler dump.
 
 
 - So, the program checks its first parameter, if it contains the string `token`, `You may not access 'token'` is displayed, then it `<exit@plt>`.
-Otherwise, it will attempt to open a file named with the value of its first parameter, and it will `<write@plt>` the contents of that file to the standard output with, so:
+Otherwise, it will attempt to `<open@plt>` a file named with the value of its first parameter, and it will `<write@plt>` the contents of that file to the standard output with, so:
 ```
 level08@SnowCrash:~$ ln -s /home/user/level08/token /tmp/exploit
 ```

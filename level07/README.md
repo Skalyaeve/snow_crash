@@ -68,7 +68,7 @@ End of assembler dump.
 ```
 
 
-- The program calls `<getenv@plt>` after moving the address (`0x8048680`) on top of the stack.
+- The program calls `<getenv@plt>` after moving the address `0x8048680` on top of the stack.
 ```
 (gdb) x/s 0x8048680
 0x8048680:       "LOGNAME"

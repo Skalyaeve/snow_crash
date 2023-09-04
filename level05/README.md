@@ -11,7 +11,7 @@ level05@SnowCrash:~$ cat /var/mail/level05
 */2 * * * * su -c "sh /usr/sbin/openarenaserver" - flag05
 ```
 
-- It looks like a [Cron](https://en.wikipedia.org/wiki/Cron) instruction. It indicates that every two minutes, the command `sh /usr/sbin/openarenaserver` will be executed by user flag05.
+- It looks like a [Cron](https://en.wikipedia.org/wiki/Cron) instruction. It indicates that every two minutes, the command `/usr/sbin/openarenaserver` will be executed by user flag05.
 ```
 level05@SnowCrash:~$ ls -l /usr/sbin/openarenaserver
 -rwxr-x---+ 1 flag05 flag05 94 Mar  5  2016 /usr/sbin/openarenaserver

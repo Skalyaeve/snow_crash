@@ -42,7 +42,7 @@ The line of interest to us is the following:
 >`$a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a);`
 
 
-- This line states that if the content of the file starts with `[x` and ends with `]`, everything located between these boundaries can be executed as PHP code (due to `/e`). The output of this execution will then be passed as a parameter to the `y()` function, so:
+- This line states that if the content of the file starts with `[x ` and ends with `]`, everything located between these boundaries can be executed as PHP code (due to `/e`). The output of this execution will then be passed as a parameter to the `y()` function, so:
 ```
 level06@SnowCrash:~$ echo "[x \${\`getflag\`}]" > /tmp/test
 ```
