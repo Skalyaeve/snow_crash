@@ -1,4 +1,4 @@
-# level05
+# Level 05
 
 - We login as user level05, we can see a notification: `You have new mail`.
 ```

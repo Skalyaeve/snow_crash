@@ -1,4 +1,4 @@
-# level00
+# Level 00
 
 - We login as user level00, we ar looking for a token (a password) allowing us to open a terminal as user flag00, in order to execute the `/bin/getflag` command as user flag00. So first, let's try to see if there's something belonging to user flag00.
 ```
