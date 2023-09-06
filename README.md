@@ -1,4 +1,5 @@
 # Snow-Crash
+"This project will be an introduction to cyber security."
 
 As a developer, you may have to work on softwares that will be used by hundreds of persons in your career.
 If your software shows some weaknesses, these weaknesses will expose the users through your software.
