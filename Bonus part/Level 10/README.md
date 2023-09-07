@@ -107,8 +107,8 @@ int main(int argc,char **argv)
 - Given that `access()` does not consider [the setuid and setgid bits](https://en.wikipedia.org/wiki/Setuid) when checking permissions, the program displays `You don't have access to the token` and then terminates.
 
 
-- Note that [the call to access(), directly followed by a call to open(), is the subject of a security vulnerability](https://vulncat.fortify.com/en/detail?id=desc.controlflow.cpp.file_access_race_condition#C%2FC%2B%2B).
-Indeed, between the time when the program calls `access(our_file)` and the time when it calls `open(our_file)`, it is possible for us to replace `our_file` with a file of the same name, but which would be a symbolic link to another file. As a result, the program will rely on the return of `access(our_file)` to determine whether it can `open(our_file)` or not.
+- Note that `open()` takes into account the setuid and setgid bits when checking permissions.
+So, between the time when the program calls `access(our_file)` and the time when it calls `open(our_file)`, it is possible for us to replace `our_file` with a file of the same name in order to pass the access check with a file that can be read.
 
 
 - Thus, we will need 3 terminals. The first one will run `nc -lk 6969 > /tmp/pwn.log` to listen on all IPs through port 6969 and store everything it receives in `/tmp/pwn.log`.
