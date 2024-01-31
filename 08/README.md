@@ -1,6 +1,6 @@
-# Level 08
+# 08 - Binary exploit: lien symbolique
 
-- We login as user level08.
+- On se connecte en tant que level08.
 ```
 level08@SnowCrash:~$ ls -l
 total 16
@@ -19,7 +19,7 @@ You may not access 'token'
 ```
 
 
-- A binary has been left for us. Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+- Un binaire nous a été laissé. Regardons ça de plus près avec [GDB](https://fr.wikipedia.org/wiki/GNU_Debugger).
 ```
 (gdb) info functions
 All defined functions:
@@ -119,32 +119,21 @@ End of assembler dump.
 ```
 
 
-- We can see that after moving certain values onto the stack the program compares the constant `0x1` with the value located at `0x8(%ebp)`. If this comparison results in equality, the program will call `<printf@plt>` with the value contained in memory address `0x8048799`, and then `<exit@plt>`.
-```
-(gdb) x/s 0x8048780
-0x8048780:       "%s [file to read]\n"
-```
-
-
-- It can be assumed that this binary results from a program written in C. The latter compares `argc` to the constant `0x1`, so `if argc == 1` (if the program was launched without arguments), it displays `./level08 [file to read]` and exits.
-
-
-- Then, we can see that `<strstr@plt>` is called to search within the string located in the `eax` register for the string that starts at address `0x8048793`.
+- On peut voir que `<strstr@plt>` est appelé pour chercher dans la chaîne de caractères contenue dans le registre `eax` la chaîne de caractères qui commence à l'adresse `0x8048793`.
 ```
 (gdb) x/s 0x8048793
 0x8048793:       "token"
 ```
 
 
-- Thus, if the string `token` is found within the string contained in the `eax` register (likely the first parameter given to the program), it will `<printf@plt>` the string that starts at address `0x8048799`, and then `<exit@plt>`. Otherwise, the program will call `<open@plt>`, followed by `<read@plt>` and `<write@plt>`.
+- Ainsi, si la chaîne de caractères `token` est trouvée dans la chaîne de caractères contenue dans le registre `eax` (probablement le premier paramètre donné au programme), il `<printf@plt>` la chaîne de caractères qui commence à l'adresse `0x8048799`, puis `<exit@plt>`. Sinon, le programme appellera `<open@plt>`, suivi de `<read@plt>` et `<write@plt>`.
 ```
 (gdb) x/s 0x8048799
 0x8048799:       "You may not access '%s'\n"
 ```
 
 
-- So, the program checks its first parameter, if it contains the string `token`, `You may not access 'token'` is displayed, then it `<exit@plt>`.
-Otherwise, it will attempt to `<open@plt>` a file named with the value of its first parameter, and it will `<write@plt>` the contents of that file to the standard output with, so:
+- Donc, si le premier paramètre donné au programme contient la chaîne de caractères `token`, `You may not access 'token'` est affiché, puis on `<exit@plt>`, sinon le programme ouvre le fichier donné en paramètre, lit son contenu et l'affiche. Du coup:
 ```
 level08@SnowCrash:~$ ln -s /home/user/level08/token /tmp/exploit
 ```

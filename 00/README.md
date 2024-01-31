@@ -1,6 +1,6 @@
-# Level 00
+# 00 - Chiffrement affine
 
-- We login as user level00, we ar looking for a token (a password) allowing us to open a terminal as user flag00, in order to execute the `/bin/getflag` command as user flag00. So first, let's try to see if there's something belonging to user flag00.
+- On se connecte en tant que level00, nous cherchons un token (un mot de passe) nous permettant d'ouvrir un terminal en tant que flag00, afin d'exécuter `/bin/getflag`. Donc, tout d'abord, essayons de voir s'il y a quelque chose appartenant à flag00.
 ```
 level00@SnowCrash:~$ find / -user flag00 2>/dev/null | grep -v /proc/*
 /usr/sbin/john
@@ -18,7 +18,7 @@ cdiiddwpgswtgt
 ```
 
 
-- `/usr/sbin/john` is the only file belonging to user flag00, it's probably our token, let's try:
+- `/usr/sbin/john` est le seul fichier appartenant à flag00, c'est probablement notre token, essayons:
 ```
 level00@SnowCrash:~$ su flag00
 Password:cdiiddwpgswtgt
@@ -26,7 +26,7 @@ su: Authentication failure
 ```
 
 
-- It doesn't work, the token might be encrypted. Let's try using a simple online decryption tool. [Dcode.fr](https://www.dcode.fr/cipher-identifier) suggests [an affine cipher](https://en.wikipedia.org/wiki/Affine_cipher), and provides the password `nottoohardhere`.
+- Ça ne fonctionne pas, le token est peut-être chiffré. Essayons d'utiliser un simple outil de décryptage en ligne. [Dcode.fr](https://www.dcode.fr/cipher-identifier) suggère [un chiffrement affine](https://en.wikipedia.org/wiki/Affine_cipher), et fournit le mot de passe  `nottoohardhere`.
 ```
 level00@SnowCrash:~$ su flag00
 Password:nottoohardhere

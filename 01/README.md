@@ -1,6 +1,6 @@
-# Level 01
+# 01 - Hash DES
 
-- We login as user level01.
+- On se connecte en tant que level01.
 ```
 level01@SnowCrash:~$ ls -la
 total 12
@@ -16,7 +16,7 @@ level01@SnowCrash:~$ find / -user flag01 2>/dev/null | grep -v /proc/*
 ```
 
 
-- Nothing interesting has been left to us, but if we look at the content of the file `/etc/passwd`:
+- Rien d'intéressant ne nous a été laissé, mais si nous regardons le contenu du fichier  `/etc/passwd`:
 ```
 level01@SnowCrash:~$ cat /etc/passwd
 ...
@@ -29,27 +29,19 @@ flag02:x:3002:3002::/home/flag/flag02:/bin/bash
 ```
 
 
-- We can see `flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash`, maybe `42hDRfypTqqnw` is our token:
-```
-level01@SnowCrash:~$ su flag01
-Password:42hDRfypTqqnw
-su: Authentication failure
-```
-
-
-- It doesn't work, the token may be encrypted.
-
-
-- [Dcode.fr](https://www.dcode.fr/cipher-identifier) couldn't find the password, so maybe the password is actually hashed. Let's see what [John the Ripper](https://en.wikipedia.org/wiki/John_the_Ripper) thinks about this.
+- Nous pouvons voir `flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash`, peut-être que `42hDRfypTqqnw` est notre token, mais il est enfaite chiffré, du coup:
 ```
 $ echo 42hDRfypTqqnw > pass
 ```
 
 ```
-$ john --show pass
-?:abcdefg
-
-1 password hash cracked, 0 left
+$ john pass
+...
+Loaded 1 password hash (descrypt, traditional crypt(3) [DES 256/256 AVX2])
+...
+Proceeding with wordlist:/usr/share/john/password.lst
+abcdefg          (?)
+...
 ```
 
 ```

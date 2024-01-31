@@ -1,6 +1,6 @@
-# Level 07
+# 07 - Binary exploit: environnement
 
-- We login as user level07.
+- On se connecte en tant que level07.
 ```
 level07@SnowCrash:~$ ls -l
 total 12
@@ -13,7 +13,7 @@ level07
 ```
 
 
-- A binary has been left for us. Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+- Un binaire nous a été laissé. Examinons-le de plus près à l'aide de [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
 (gdb) info functions
 All defined functions:
@@ -68,22 +68,21 @@ End of assembler dump.
 ```
 
 
-- The program calls `<getenv@plt>` after moving the address `0x8048680` on top of the stack.
+- Le programme appelle `<getenv@plt>` après avoir déplacé l'adresse `0x8048680` au sommet de la stack.
 ```
 (gdb) x/s 0x8048680
 0x8048680:       "LOGNAME"
 ```
 
 
-- `<getenv@plt>` will thus save the value of the `LOGNAME` environment variable in the `eax` register, and this value will be passed as a parameter to the `<asprintf@plt>` function. Note that later, the address `0x8048688` will also be moved on top of the stack to be used by `<asprintf@plt>`.
+- `<getenv@plt>` va sauvegarder la valeur de la variable d'environnement `LOGNAME` dans le registre `eax`, et cette valeur sera passée en paramètre à la fonction `<asprintf@plt>`. Ensuite, l'adresse `0x8048688` sera également déplacée au sommet de la stack pour être utilisée par `<asprintf@plt>`.
 ```
 (gdb) x/s 0x8048688
 0x8048688:       "/bin/echo %s"
 ```
 
 
-- Then, `<asprintf@plt>` will store in the `eax` register the address pointing to the string `/bin/echo %s`, where `%s` will be replaced by the contents of the `LOGNAME` environment variable.
-The resulting string will be executed by calling `<system@plt>`, so:
+- `<asprintf@plt>` stockera dans le registre `eax` l'adresse pointant vers la chaîne `/bin/echo %s`, où `%s` sera remplacé par la valeur de la variable d'environnement `LOGNAME`. Le résultat sera executé par `<system@plt>`, du coup:
 ```
 level07@SnowCrash:~$ export LOGNAME="| getflag"
 ```

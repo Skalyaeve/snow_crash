@@ -1,6 +1,6 @@
-# Level 09
+# 09 - Chiffrement par décalage
 
-- We login as user level09.
+- On se connecte en tant que level09.
 ```
 level09@SnowCrash:~$ ls -l
 total 12
@@ -24,55 +24,49 @@ f4kmm6p|=pnDBDu{
 ```
 
 ```
-level09@SnowCrash:~$ su flag09
-Password:f4kmm6p|=pnDBDu{
-su: Authentication failure
-```
-
-```
 level09@SnowCrash:~$ ./level09 aaaa
 abcd
 ```
 
 
-- We can access the content of the token, but it appears to have been encrypted. When we execute the level09 binary with `aaaa` as a parameter, we get `abcd`. We can assume that the content of the token has been encrypted by the binary.
+- Nous pouvons accéder au contenu du token, mais il semble avoir été crypté. Lorsque nous exécutons le binaire level09 avec `aaaa` en paramètre, nous obtenons `abcd`. Peut-être que le contenu du token à été crypté par le binaire.
 
 
-- The encryption seems quite simple, at first glance it appears that each character in the resulting string is the sum of its `ASCII value` + `its position in the string - 1`.
+- L'encryption semble assez simple, au premier abord il semble que chaque caractère de la chaîne résultante soit la somme de sa `valeur ASCII` + `sa position dans la chaîne`.
 
 
-- Let's do the substitution for each character of the token:
-```
-ASCII	VALUE		-POS		RES             ASCII
-f	102		-0		102		f
-4	52		-1		51		3
-k	107		-2		105		i
-m	109		-3		106		j
-m	109		-4		105		i
-6	54		-5		49		1
-p	112		-6		106		j
-|	124		-7		117		u
-=	61		-8		53		5
-M-^B	-9		-7		121		y
-^?	127		-10		117		u
-p	112		-11		101		e
-M-^B	-12		-10		118		v
-n	110		-13		97		a
-M-^C	-14		-11		117		u
-M-^B	-15		-13		115		s
-D	68		-16		52		4
-B	66		-17		49		1
-M-^C	-18		-15		113		q
-D	68		-19		49		1
-u	117		-20		97		a
-{	123		-21		102		f
-^?	127		-22		105		i
-M-^L	12		-23		-11     	u
-M-^I	-24		-15		113		q
-```
+- Faisons la substitution pour chaque caractère du token:
+
+| Caractère | ASCII | Position | Résultat | Résultat |
+|-------|-------|-------|-------|-------|
+| f     | 102   | 0     | 102   | f     |
+| 4     | 52    | 1     | 51    | 3     |
+| k     | 107   | 2     | 105   | i     |
+| m     | 109   | 3     | 106   | j     |
+| m     | 109   | 4     | 105   | i     |
+| 6     | 54    | 5     | 49    | 1     |
+| p     | 112   | 6     | 106   | j     |
+| \|    | 124   | 7     | 117   | u     |
+| =     | 61    | 8     | 53    | 5     |
+| \x82  | 130   | 9     | 121   | y     |
+| \x7f  | 127   | 10    | 117   | u     |
+| p     | 112   | 11    | 101   | e     |
+| \x82  | 130   | 12    | 118   | v     |
+| n     | 110   | 13    | 97    | a     |
+| \x83  | 131   | 14    | 117   | u     |
+| \x82  | 130   | 15    | 115   | s     |
+| D     | 68    | 16    | 52    | 4     |
+| B     | 66    | 17    | 49    | 1     |
+| \x83  | 131   | 18    | 113   | q     |
+| D     | 68    | 19    | 49    | 1     |
+| u     | 117   | 20    | 97    | a     |
+| {     | 123   | 21    | 102   | f     |
+| \x7f  | 127   | 22    | 105   | i     |
+| \x8c  | 140   | 23    | 117   | u     |
+| \x89  | 137   | 24    | 113   | q     |
 
 
-- We get `f3iji1ju5yuevaus41q1afiuq`.
+- On obtient `f3iji1ju5yuevaus41q1afiuq`.
 ```
 level09@SnowCrash:~$ su flag09
 Password:f3iji1ju5yuevaus41q1afiuq

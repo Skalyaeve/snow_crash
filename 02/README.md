@@ -1,6 +1,6 @@
-# Level 02
+# 02 - Analyse réseau
 
-- We login as user level02.
+- On se connecte en tant que level02.
 ```
 level02@SnowCrash:~$ ls -l
 total 12
@@ -8,11 +8,10 @@ total 12
 ```
 
 
-- [A pcap file](https://en.wikipedia.org/wiki/Pcap) was left for us. Upon examining it with [Wireshark](https://en.wikipedia.org/wiki/Wireshark), we can see that a packet contains the characters `Password:`. The packets that follow contain the following keyboard inputs.
+- Un fichier [pcap](https://en.wikipedia.org/wiki/Pcap) nous a été laissé. En l'examinant avec [Wireshark](https://en.wikipedia.org/wiki/Wireshark), nous pouvons voir qu'un paquet contient le mot `Password:`, et le paquet qui suit contient ceci:
 >`f t _ w a n d r 'DEL' 'DEL' 'DEL' N D R e l 'DEL' L 0 L 'ENTER'`
 
-
-- `ft_waNDReL0L` might be our token to flag02 user.
+- `ft_waNDReL0L` est peut-être notre token.
 ```
 level02@SnowCrash:~$ su flag02
 Password:ft_waNDReL0L
