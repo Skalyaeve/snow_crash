@@ -29,7 +29,9 @@ flag02:x:3002:3002::/home/flag/flag02:/bin/bash
 ```
 
 
-- Nous pouvons voir `flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash`, peut-être que `42hDRfypTqqnw` est notre token, mais il est enfaite chiffré, du coup:
+- Nous pouvons voir `flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash`
+
+- `42hDRfypTqqnw` est notre token, mais il est hashé, du coup:
 ```
 $ echo 42hDRfypTqqnw > pass
 ```

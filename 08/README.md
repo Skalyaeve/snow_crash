@@ -126,14 +126,13 @@ End of assembler dump.
 ```
 
 
-- Ainsi, si la chaîne de caractères `token` est trouvée dans la chaîne de caractères contenue dans le registre `eax` (probablement le premier paramètre donné au programme), il `<printf@plt>` la chaîne de caractères qui commence à l'adresse `0x8048799`, puis `<exit@plt>`. Sinon, le programme appellera `<open@plt>`, suivi de `<read@plt>` et `<write@plt>`.
+- Ainsi, si la chaîne de caractères `token` est trouvée dans le paramètre donné, le programme affiche la chaîne de caractères qui commence à l'adresse `0x8048799`, puis se termine.
 ```
 (gdb) x/s 0x8048799
 0x8048799:       "You may not access '%s'\n"
 ```
 
-
-- Donc, si le premier paramètre donné au programme contient la chaîne de caractères `token`, `You may not access 'token'` est affiché, puis on `<exit@plt>`, sinon le programme ouvre le fichier donné en paramètre, lit son contenu et l'affiche. Du coup:
+- Sinon, le programme tentra d'ouvrir un fichier dont le nom est donné en paramètre, lira son contenu et l'affichera, du coup:
 ```
 level08@SnowCrash:~$ ln -s /home/user/level08/token /tmp/exploit
 ```

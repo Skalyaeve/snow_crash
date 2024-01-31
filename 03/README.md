@@ -13,7 +13,7 @@ Exploit me
 ```
 
 
-- Un binaire nous a été laissé, il appartient à l'utilisateur flag03 et au groupe level03. De plus, les [bits de permission setuid et setgid](https://en.wikipedia.org/wiki/Setuid) sont activés. Examinons ce binaire de plus près à l'aide de [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+- Un binaire nous a été laissé, il appartient à l'utilisateur flag03 et au groupe level03. De plus, les [bits de permission setuid et setgid](https://en.wikipedia.org/wiki/Setuid) sont activés. Examinons ce binaire de plus près avec [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
 (gdb) disas main
 Dump of assembler code for function main:
@@ -54,7 +54,9 @@ End of assembler dump.
 ```
 
 
-- Donc, le programme fait `system("/usr/bin/env echo Exploit me")`. En **bash**, `echo` est un built-in, mais pas en **sh**, on peut donc exploiter la variable d'environnement `PATH`.
+- Donc, le programme fait `system("/usr/bin/env echo Exploit me")`.
+
+- En **bash**, `echo` est un built-in, mais pas en **sh**, on peut donc exploiter la variable d'environnement `PATH`.
 ```
 level03@SnowCrash:~$ echo "getflag" > /tmp/echo
 ```

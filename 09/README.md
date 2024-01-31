@@ -29,7 +29,7 @@ abcd
 ```
 
 
-- Nous pouvons accéder au contenu du token, mais il semble avoir été crypté. Lorsque nous exécutons le binaire level09 avec `aaaa` en paramètre, nous obtenons `abcd`. Peut-être que le contenu du token à été crypté par le binaire.
+- Nous pouvons accéder au contenu du token, mais il est crypté. Lorsqu'on exécutons le binaire level09 avec `aaaa` en paramètre, nous obtenons `abcd`. Peut-être que le contenu du token à été crypté par le binaire.
 
 
 - L'encryption semble assez simple, au premier abord il semble que chaque caractère de la chaîne résultante soit la somme de sa `valeur ASCII` + `sa position dans la chaîne`.

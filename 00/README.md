@@ -26,7 +26,7 @@ su: Authentication failure
 ```
 
 
-- Ça ne fonctionne pas, le token est peut-être chiffré. Essayons d'utiliser un simple outil de décryptage en ligne. [Dcode.fr](https://www.dcode.fr/cipher-identifier) suggère [un chiffrement affine](https://en.wikipedia.org/wiki/Affine_cipher), et fournit le mot de passe  `nottoohardhere`.
+- Ça ne fonctionne pas, le token est enfaite chiffré. Essayons d'utiliser un simple outil de décryptage en ligne. [Dcode.fr](https://www.dcode.fr/cipher-identifier) suggère [un chiffrement affine](https://en.wikipedia.org/wiki/Affine_cipher), et propose `nottoohardhere`.
 ```
 level00@SnowCrash:~$ su flag00
 Password:nottoohardhere

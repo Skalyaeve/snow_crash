@@ -44,7 +44,7 @@ $r = x($argv[1], $argv[2]); print $r;
 >`$a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a);`
 
 
-- Cette ligne indique que si le contenu du fichier commence par `[x ` et se termine par `]`, tout ce qui se trouve entre ces limites peut être exécuté en tant que code PHP (en raison du `/e`). La sortie de cette exécution sera ensuite transmise en tant que paramètre à la fonction `y()`, du coup:
+- Cette ligne indique que si le contenu du fichier commence par `[x ` et se termine par `]`, tout ce qui se trouve entre ces limites peut être exécuté en tant que code PHP (en raison du `/e`), du coup:
 ```
 level06@SnowCrash:~$ echo "[x \${\`getflag\`}]" > /tmp/test
 ```

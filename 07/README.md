@@ -13,7 +13,7 @@ level07
 ```
 
 
-- Un binaire nous a été laissé. Examinons-le de plus près à l'aide de [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+- Un binaire nous a été laissé. Examinons-le de plus près avec [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
 (gdb) info functions
 All defined functions:

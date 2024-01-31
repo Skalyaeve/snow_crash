@@ -18,3 +18,12 @@ Before asking for help, ask yourself if you’ve really explored all the possibi
 | Exercice | Domain |
 | - | - |
 | 00 - Affine cipher | Cryptography |
+| 01 - DES Hash | Cryptography |
+| 02 - Network analysis | Network |
+| 03 - Binary exploit: PATH | Reverse engineering |
+| 04 - Perl exploit: user input | Reverse engineering |
+| 05 - Scheduled task: Cron | Privilege escalation |
+| 06 - PHP exploit: user input | Reverse engineering |
+| 07 - Binary exploit: environment | Reverse engineering |
+| 08 - Binary exploit: symbolic link | Reverse engineering |
+| 09 - Caesar cipher | Cryptography |

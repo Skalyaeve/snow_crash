@@ -1,6 +1,6 @@
 # 05 - Tache planifiée: Cron
 
-- On se connecte en tant que level05, on peut voir une notification: `You have new mail`.
+- On se connecte en tant que level05, sur notre shell s'affiche `You have a new mail`.
 ```
 level05@SnowCrash:~$ ls /var/mail
 level05
@@ -24,7 +24,7 @@ for i in /opt/openarenaserver/* ; do
 done
 ```
 
-- Le script exécute `bash -x` sur tous les éléments présents dans le répertoire `/opt/openarenaserver/`, avec une limite fixe de 5 secondes pour chaque exécution. Ensuite, l'élément respectif est supprimé, du coup:
+- Le script exécute `bash -x` sur tous les éléments présents dans le répertoire `/opt/openarenaserver/`, avec une limite fixe de 5 secondes pour chaque exécution. Ensuite, l'élément est supprimé, du coup:
 ```
 level05@SnowCrash:~$ echo "getflag > /tmp/flag2level06" > /opt/openarenaserver/exploit.sh
 ```
