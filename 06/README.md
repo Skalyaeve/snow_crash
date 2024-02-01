@@ -15,9 +15,6 @@ PHP Warning:  file_get_contents(): Filename cannot be empty in /home/user/level0
 
 
 - Un binaire ainsi qu'un script PHP sont présents, le binaire semble exécuter le script PHP.
-```
-level06@SnowCrash:~$ cat level06.php
-```
 ```php
 #!/usr/bin/php
 <?php

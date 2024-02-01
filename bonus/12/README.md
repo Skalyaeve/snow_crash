@@ -1,13 +1,13 @@
-# Level 12
+# 12 - Perl exploit: user input
 
-- We login as user level11.
+- On se connecte en tant que level12.
 ```
 level12@SnowCrash:~$ ls -l
 total 4
 -rwsr-sr-x+ 1 flag12 level12 464 Mar  5  2016 level12.pl
 ```
 
-- A perl script has been left to us, let's `cat level12.pl`:
+- Un script perl nous a été laissé:
 ```perl
 #!/usr/bin/env perl
 # localhost:4646
@@ -40,13 +40,13 @@ sub n {
 n(t(param("x"), param("y")));
 ```
 
-- The script appears to be designed to be executed by a [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) through a service listening on localhost through port 4646. It takes two parameters that are passed to the `t()` function, the return of this latter is used to `print()` a message accordingly.
+- Ce script semble être conçu pour être exécuté par un [CGI](https://fr.wikipedia.org/wiki/Common_Gateway_Interface) à travers un service écoutant sur localhost à travers le port 4646. Il prend deux paramètres qui sont passés à la fonction `t()`, le retour de cette dernière est utilisé pour `print()` un message en conséquence.
 
 
-- The `t()` function will change all lowercase characters contained in its first parameter to uppercase, then it will erase any character following a space. The resulting string (`$xx`) will be used by `egrep "^$xx" /tmp/xd 2>&1`.
+- La fonction `t()` va transformer tous les caractères minuscules contenus dans son premier paramètre en majuscules, puis elle va effacer tous les caractères suivant un espace. La chaîne résultante (`$xx`) sera utilisée par `egrep "^$xx" /tmp/xd 2>&1`.
 
 
-- Because of `$xx =~ tr/a-z/A-Z/;` we cannot directly send `x=;getflag>/tmp/level12.flag` because all our characters will be transformed into uppercase, so:
+- `$xx =~ tr/a-z/A-Z/;` fait que nous ne pouvons pas directement envoyer `x=;getflag>/tmp/level12.flag` car tous nos caractères seront transformés en majuscules, du coup:
 ```
 level12@SnowCrash:~$ ss -tunlp | grep 4646
 tcp    LISTEN     0      128                   :::4646                 :::*

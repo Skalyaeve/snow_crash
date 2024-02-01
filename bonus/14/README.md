@@ -1,6 +1,6 @@
 # Level 14
 
-- We login as user level14.
+- On se connecte en tant que level14.
 ```
 level14@SnowCrash:~$ ls -la
 total 12
@@ -30,11 +30,7 @@ flag14:x:3014:3014::/home/flag/flag14:/bin/bash
 ```
 
 
-- Nothing.. Yet we need to retrieve flag14. Normally, it's the `getflag` command that gives us our flag depending on the user who executes it.
-One way or another, the `getflag` binary must be able to provide the flags, so either the flags are stored somewhere in the ISO and the command is used to retrieve them, or they are directly written in the source code of the binary.
-
-
-- Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+- Rien.. Pourtant il faut récupérer flag14. Normalement, c'est la commande `getflag` qui nous donne notre flag en fonction de l'utilisateur qui l'exécute.
 ```
 level14@SnowCrash:~$ whereis getflag
 getflag: /bin/getflag
@@ -66,7 +62,7 @@ HUGE CODE
 ```
 
 
-- Let's save time, we can use [Ghidra](https://en.wikipedia.org/wiki/Ghidra) to get an interpretation of the source code of this binary.
+- Gagnons du temps, utilisons [Ghidra](https://en.wikipedia.org/wiki/Ghidra) pour obtenir une interprétation en C.
 ```c
 undefined4 main(void)
 {
@@ -74,7 +70,7 @@ undefined4 main(void)
     lVar2 = ptrace(PTRACE_TRACEME,0,1,0);
     if (lVar2 < 0) {
         /* Si le programme est déjà en train d'être suivi par un autre processus (ex: GDB),
-        ptrace retournera -1, le programme affiche un message d'erreur et sort. */
+        ptrace retournera -1, le programme affiche un message d'erreur et se termine. */
     }
     else {
         pcVar7 = getenv("LD_PRELOAD");
@@ -84,7 +80,7 @@ undefined4 main(void)
                 iVar4 = syscall_open("/proc/self/maps",0);
                 if (iVar4 == -1) {
                     /* Si un chargement dynamique de bibliothèque est en cours,
-                    le programme affiche un message d'erreur et sort.*/
+                    le programme affiche un message d'erreur se termine.*/
                 }
                 else {
                     do {
@@ -99,7 +95,7 @@ undefined4 main(void)
 
                             pFVar8 = stdout;
                             _Var5 = getuid();
-                            // --- A ce moment, '_Var5' sera utilisé pour savoir quel flag afficher.
+                            // A ce moment, '_Var5' sera utilisé pour savoir quel flag afficher.
 
                             if (_Var5 == 0xbbe) {
                                 pcVar7 = ft_des("H8B8h_20B4J43><8>\\ED<;j@3");
@@ -134,13 +130,13 @@ undefined4 main(void)
             }
             else {
                 /* Si des bibliothèques ont été préchargées en utilisant la variable
-                d'environnement le fichier /etc/ld.so.preload, le programme affiche un message d'erreur et on sort. */
+                d'environnement le fichier /etc/ld.so.preload, le programme affiche un message d'erreur et se termine. */
             }
             ...
         }
         else {
             /* Si des bibliothèques ont été préchargées en utilisant la variable
-            d'environnement LD_PRELOAD, le programme affiche un message d'erreur et on sort. */
+            d'environnement LD_PRELOAD, le programme affiche un message d'erreur et se termine. */
         }
         ...
     }
@@ -149,11 +145,11 @@ undefined4 main(void)
 ```
 
 
-- The binary contain various protections ([DLL injection](https://en.wikipedia.org/wiki/DLL_injection), [buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow_protection), ...), but the flags are accessible to us in the same way as the previous level.
-We just need to monitor the program's execution using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger) and we should be able to easily retrieve our flag.
+- Le binaire contient diverses protections ([injection de bibliothèque](https://fr.wikipedia.org/wiki/Injection_de_biblioth%C3%A8que), [dépassement de tampon](https://fr.wikipedia.org/wiki/D%C3%A9passement_de_tampon), ...), mais les flags nous sont accessibles de la même manière que pour le niveau précédent. 
 
+- On a juste besoin de diriger l'exécution du programme avec [GDB](https://fr.wikipedia.org/wiki/GNU_Debugger) et on devrait pouvoir récupérer notre flag facilement.
 
-- A breakpoint should be placed after the `ptrace(PTRACE_TRACEME, 0, 1, 0)` and `getuid()` returns in order to modify the return of these functions, so:
+- Un point d'arrêt doit être placé après le retour de `ptrace(PTRACE_TRACEME, 0, 1, 0)` et de `getuid()` afin de modifier la valeur de retour de ces fonctions:
 ```
 level14@SnowCrash:~$ cat /etc/passwd | grep flag14
 flag14:x:3014:3014::/home/flag/flag14:/bin/bash

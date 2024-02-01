@@ -1,6 +1,6 @@
-# Level 13
+# 13 - Binary exploit: debugger
 
-- We login as user level13.
+- On se connecte en tant que level13.
 ```
 level13@SnowCrash:~$ ls -l
 total 8
@@ -13,7 +13,7 @@ UID 2013 started us but we we expect 4242
 ```
 
 
-- Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+- Regardons ce binaire de plus près avec [GDB](https://fr.wikipedia.org/wiki/GNU_Debugger).
 ```
 (gdb) info functions
 All defined functions:
@@ -57,14 +57,14 @@ End of assembler dump.
 ```
 
 
-- We can see that the return from `<getuid@plt>` is compared with the hexadecimal value 1092 (4242 in decimal). If the two values are not equal, the program will call `<printf@plt>` with the string that starts at address `0x80486c8`.
+- On peut voir que le retour de `<getuid@plt>` est comparé avec la valeur hexadécimale 1092 (4242 en décimal). Si les deux valeurs ne sont pas égales, le programme va appeler `<printf@plt>` avec la chaîne qui commence à l'adresse `0x80486c8`.
 ```
 (gdb) x/s 0x80486c8
 0x80486c8:       "UID %d started us but we we expect %d\n"
 ```
 
 
-- However, if the comparison is indeed equal, the program will call the `<ft_des>` function with the parameter being the string that starts at the address `0x80486ef`. After that, the program will printf the string that begins at the address `0x8048709`.
+- Cependant, si la comparaison est bien égale, le programme va appeler la fonction `<ft_des>` avec comme paramètre la chaîne qui commence à l'adresse `0x80486ef`, puis va printf la chaîne qui commence à l'adresse `0x8048709`.
 ```
 (gdb) x/s 0x80486ef
 0x80486ef:       "boe]!ai0FB@.:|L6l@A?>qJ}I"
@@ -76,7 +76,7 @@ End of assembler dump.
 ```
 
 
-- We can assume that `<ft_des>` will convert `boe]!ai0FB@.:|L6l@A?>qJ}I` into the token we need to login as user flag13. Therefore, [the setuid and setgid permission bits](https://en.wikipedia.org/wiki/Setuid) are unnecessary here, as we can retrieve our token directly in gdb since the program's code contains the token in encrypted form.
+- On peut supposer que `<ft_des>` va convertir `boe]!ai0FB@.:|L6l@A?>qJ}I` en notre token. Par conséquent, le bit de permission setuid est inutile ici, car nous pouvons récupérer notre token directement dans gdb.
 ```
 (gdb) b*0x0804859a
 Breakpoint 1 at 0x804859a
@@ -103,6 +103,7 @@ Password:2A31L79asukciNyi8uppkEuSx
 su: Authentication failure
 ```
 
+- C'était enfaite le flag et non le token.
 ```
 level13@SnowCrash:~$ su level14
 Password:2A31L79asukciNyi8uppkEuSx

@@ -21,9 +21,14 @@ Before asking for help, ask yourself if you’ve really explored all the possibi
 | 01 - DES Hash | Cryptography |
 | 02 - Network analysis | Network |
 | 03 - Binary exploit: PATH | Reverse engineering |
-| 04 - Perl exploit: user input | Reverse engineering |
+| 04 - Perl exploit: user input 1 | Privilege escalation |
 | 05 - Scheduled task: Cron | Privilege escalation |
-| 06 - PHP exploit: user input | Reverse engineering |
+| 06 - PHP exploit: user input | Privilege escalation |
 | 07 - Binary exploit: environment | Reverse engineering |
 | 08 - Binary exploit: symbolic link | Reverse engineering |
 | 09 - Caesar cipher | Cryptography |
+| 10 - Binary exploit: race condition | Reverse engineering |
+| 11 - Lua exploit: user input | Privilege escalation |
+| 12 - Perl exploit: user input 2 | Privilege escalation |
+| 13 - Binary exploit: debugger 1 | Reverse engineering |
+| 14 - Binary exploit: debugger 2 | Reverse engineering |

